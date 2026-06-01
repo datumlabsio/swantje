@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "swantje",
+  "displayName": "Swantje",
+  "version": "0.0.1",
+  "description": "Data platform copilot — connect your data stack and get analyst, engineer, and devops agents that understand your environment",
+  "author": {
+    "name": "DatumLabs",
+    "email": "dev@datumlabs.io",
+    "url": "https://datumlabs.io"
+  },
+  "homepage": "https://datumlabs.io/swantje",
+  "repository": "https://github.com/datumlabs/swantje",
+  "license": "MIT",
+  "keywords": ["data", "analytics", "dagster", "dbt", "dlt", "clickhouse", "bigquery"],
+  "skills": "./skills/"
+}

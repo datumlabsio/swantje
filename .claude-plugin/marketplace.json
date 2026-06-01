@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "datumlabs",
+  "owner": {
+    "name": "DatumLabs",
+    "email": "dev@datumlabs.io"
+  },
+  "description": "DatumLabs data platform plugins for Claude Code",
+  "plugins": [
+    {
+      "name": "swantje",
+      "displayName": "Swantje",
+      "source": {
+        "source": "github",
+        "repo": "datumlabs/swantje",
+        "ref": "main"
+      },
+      "description": "Data platform copilot — connect your data stack and get analyst, engineer, and devops agents that understand your environment",
+      "version": "0.0.1",
+      "author": {
+        "name": "DatumLabs",
+        "email": "dev@datumlabs.io"
+      },
+      "homepage": "https://datumlabs.io/swantje",
+      "repository": "https://github.com/datumlabs/swantje",
+      "license": "MIT",
+      "keywords": ["data", "analytics", "dagster", "dbt", "dlt", "clickhouse", "bigquery"],
+      "category": "productivity"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "version": "0.0.1",
+  "connectors": {
+    "clickhouse": {
+      "enabled": false,
+      "host": null,
+      "port": 8443,
+      "database": null,
+      "username": null,
+      "secure": true
+    },
+    "bigquery": {
+      "enabled": false,
+      "project_id": null,
+      "dataset": null,
+      "location": "US"
+    },
+    "dagster": {
+      "enabled": false,
+      "host": null,
+      "port": 3000,
+      "deployment": "prod"
+    },
+    "dlt": {
+      "enabled": false,
+      "pipeline_dir": null
+    },
+    "github": {
+      "enabled": false,
+      "org": null,
+      "repos": []
+    },
+    "dbt": {
+      "enabled": false,
+      "project_dir": null,
+      "profiles_dir": null,
+      "target": "dev"
+    }
+  }
+}
