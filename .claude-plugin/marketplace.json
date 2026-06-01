@@ -16,7 +16,7 @@
         "ref": "main"
       },
       "description": "Data platform copilot — connect your data stack and get analyst, engineer, and devops agents that understand your environment",
-      "version": "0.0.1",
+      "version": "0.1.0",
       "author": {
         "name": "DatumLabs",
         "email": "dev@datumlabs.io"

@@ -25,6 +25,7 @@ Then run the onboarding wizard:
 |---|---|
 | `/swantje:connect-clickhouse` | ClickHouse database |
 | `/swantje:connect-bigquery` | Google BigQuery |
+| `/swantje:connect-hex` | Hex notebooks — unlocks direct query execution |
 | `/swantje:connect-dagster` | Dagster orchestration |
 | `/swantje:connect-dlt` | dlt pipeline directory |
 | `/swantje:connect-github` | GitHub org and repos |
@@ -35,7 +36,7 @@ Connection config is stored in `.swantje/config.json` in your project. Secrets (
 ## Agents
 
 ### `/swantje:analyst`
-Queries your connected data warehouse, explores schemas, and explains data. Knows your dbt models so it can answer questions about where data comes from.
+Queries your connected data warehouse, explores schemas, and explains data. Knows your dbt models so it can answer questions about where data comes from. **When Hex is connected, creates and runs notebooks directly** — no copy-pasting queries.
 
 ### `/swantje:engineer`
 Builds and maintains pipelines. Generates dlt sources, Dagster assets, and dbt models. Reads your existing code before generating anything so it matches your conventions.
@@ -50,7 +51,7 @@ Diagnoses pipeline failures, reviews Dagster deployment health, and audits infra
 
 ## Version
 
-`0.0.1` — initial release. Direct query execution and live Dagster API access coming in upcoming versions.
+`0.1.0` — Hex integration. Analyst agent now creates and runs notebooks directly when Hex is connected.
 
 ## Made by
 

@@ -23,6 +23,9 @@ Data Warehouses / Databases:
   [ ] ClickHouse
   [ ] BigQuery
 
+Notebooks & Analytics:
+  [ ] Hex  ← enables direct notebook creation and query execution
+
 Orchestration:
   [ ] Dagster
 
@@ -36,6 +39,8 @@ Transformations:
   [ ] dbt
 ```
 
+Highlight Hex: tell the user that connecting Hex upgrades the analyst agent from "writes queries for you to run" to "creates and runs notebooks directly."
+
 Tell them they can always run `/swantje:connect-<name>` later to add more.
 
 ## Step 3 — Run selected connectors
@@ -43,6 +48,7 @@ Tell them they can always run `/swantje:connect-<name>` later to add more.
 For each connector the user selected, invoke the corresponding skill:
 - ClickHouse → tell them to run `/swantje:connect-clickhouse`
 - BigQuery → `/swantje:connect-bigquery`
+- Hex → `/swantje:connect-hex`
 - Dagster → `/swantje:connect-dagster`
 - dlt → `/swantje:connect-dlt`
 - GitHub → `/swantje:connect-github`
