@@ -12,7 +12,7 @@
       "displayName": "Swantje",
       "source": {
         "source": "github",
-        "repo": "datumlabs/swantje",
+        "repo": "datumlabsio/swantje",
         "ref": "main"
       },
       "description": "Data platform copilot — connect your data stack and get analyst, engineer, and devops agents that understand your environment",
