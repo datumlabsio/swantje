@@ -46,47 +46,86 @@ hex connection list --json
 Ask the user which connection to use.
 
 ### 4. Create a Hex project
+
+Check if a relevant project already exists first:
 ```bash
 hex project list --json -n 25
 ```
-Check if a relevant project already exists. If not, create a new one:
+
+If not, create one — title is a positional argument (no `--title` flag):
 ```bash
-# Open project in browser first (spawns kernel needed for execution)
-hex project open <project_id>
+hex project create "<Descriptive Title — Month Year>" --json
+# Returns: { "id": "...", ... }
+PROJECT_ID=<id from output>
+```
+
+Open it immediately — this spawns the kernel required for cell execution:
+```bash
+hex project open "$PROJECT_ID"
 ```
 
 ### 5. Create cells
 
-For SQL analysis:
-```bash
-hex cell create <project_id> \
-  -t sql \
-  -s "<your SQL query>" \
-  --data-connection-id <connection_id> \
-  --output-dataframe "results" \
-  -l "<descriptive label>"
-```
+**Standard notebook structure:**
+1. Markdown header cell — title + one-sentence description of the analysis
+2. Schema explorer SQL (only if schema is unknown — skip if user specified a table)
+3. Main analysis SQL
+4. Python visualization cell
 
-For Python visualization or transformation:
 ```bash
-hex cell create <project_id> \
+# Markdown header
+hex cell create "$PROJECT_ID" \
   -t code \
-  -s "<python code>" \
-  -l "<label>"
+  -s "# <Title>\n\n<One sentence describing the analysis>" \
+  -l "Overview"
+
+# Schema explorer (skip if table is already known)
+hex cell create "$PROJECT_ID" \
+  -t sql \
+  -s "SELECT table_schema, table_name, column_name, data_type FROM information_schema.columns WHERE table_schema NOT IN ('INFORMATION_SCHEMA') ORDER BY table_schema, table_name, ordinal_position LIMIT 200" \
+  --data-connection-id "$CONNECTION_ID" \
+  --output-dataframe "schema_info" \
+  -l "Schema Explorer"
+
+# Main analysis SQL
+hex cell create "$PROJECT_ID" \
+  -t sql \
+  -s "<your SQL>" \
+  --data-connection-id "$CONNECTION_ID" \
+  --output-dataframe "results" \
+  -l "<Descriptive label>"
+
+# Python visualization
+hex cell create "$PROJECT_ID" \
+  -t code \
+  -s "<plotly/matplotlib code>" \
+  -l "Chart"
 ```
 
-### 6. Run the cell
+**Column name casing — important:**
+- Snowflake → uppercase: `df['REVENUE']`, `df['CUSTOMER_NAME']`
+- BigQuery → lowercase: `df['revenue']`, `df['customer_name']`
+- ClickHouse → lowercase: `df['revenue']`
+
+Always match the casing of the warehouse in Python cells.
+
+### 6. Run cells and open
+
+Run each cell in order, then open the project. There is no run-status polling command — execution is fire-and-forget; results are only visible in the browser.
+
 ```bash
-CELL_ID=$(hex cell list <project_id> --json | jq -r '.cells[-1].id')
+# Get cell IDs in order
+CELLS=$(hex cell list "$PROJECT_ID" --json)
+
+# Run each cell (by index or ID)
+CELL_ID=$(echo "$CELLS" | jq -r '.cells[2].id')  # main SQL cell
 hex cell run "$CELL_ID"
+
+# Open in browser — user sees results here
+hex project open "$PROJECT_ID"
 ```
 
-### 7. Open in browser
-```bash
-hex project open <project_id>
-```
-
-Always open the project after making changes so the user can see results.
+Always open the project after running. Do not attempt to poll or read back results — the CLI cannot access cell output data.
 
 ---
 

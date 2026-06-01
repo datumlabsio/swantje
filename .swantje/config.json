@@ -35,6 +35,12 @@
       "project_dir": null,
       "profiles_dir": null,
       "target": "dev"
+    },
+    "hex": {
+      "enabled": true,
+      "workspace_url": "https://app.hex.tech/datumlabs",
+      "default_connection_id": "019a30e0-579e-7004-9f86-acab029caec8",
+      "default_connection_name": "[Demo] Hex Public Data"
     }
   }
 }
