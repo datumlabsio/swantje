@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# swantje-hex — thin wrapper around the hex CLI for the Swantje analyst agent.
+# Encodes notebook creation patterns so the analyst skill stays short.
+set -euo pipefail
+
+SCHEMA_EXPLORER_SQL="SELECT table_schema, table_name, column_name, data_type FROM information_schema.columns WHERE table_schema NOT IN ('INFORMATION_SCHEMA') ORDER BY table_schema, table_name, ordinal_position LIMIT 200"
+
+usage() {
+  cat <<EOF
+Usage: swantje-hex <command> [args]
+
+Commands:
+  new-notebook "<title>"                       Create project, open in browser, echo project_id
+  add-sql <pid> <conn_id> <label> <output_df>  Add SQL cell (SQL from stdin)
+  add-python <pid> <label>                     Add Python cell (code from stdin)
+  schema <pid> <conn_id>                       Add schema explorer SQL + print cells
+  run-all <pid>                                Run all cells in order, open in browser
+EOF
+}
+
+case "${1:-}" in
+
+  new-notebook)
+    [[ $# -lt 2 ]] && { echo "Usage: swantje-hex new-notebook \"<title>\"" >&2; exit 1; }
+    TITLE="$2"
+    PROJECT_ID=$(hex project create "$TITLE" --json | jq -r '.id')
+    hex project open "$PROJECT_ID" > /dev/null 2>&1
+    echo "$PROJECT_ID"
+    ;;
+
+  add-sql)
+    [[ $# -lt 5 ]] && { echo "Usage: swantje-hex add-sql <pid> <conn_id> <label> <output_df>" >&2; exit 1; }
+    PID="$2" CONN_ID="$3" LABEL="$4" OUTPUT_DF="$5"
+    SQL=$(cat)
+    hex cell create "$PID" \
+      -t sql \
+      -s "$SQL" \
+      --data-connection-id "$CONN_ID" \
+      --output-dataframe "$OUTPUT_DF" \
+      -l "$LABEL" \
+      --json | jq -r '.id'
+    ;;
+
+  add-python)
+    [[ $# -lt 3 ]] && { echo "Usage: swantje-hex add-python <pid> <label>" >&2; exit 1; }
+    PID="$2" LABEL="$3"
+    CODE=$(cat)
+    hex cell create "$PID" \
+      -t code \
+      -s "$CODE" \
+      -l "$LABEL" \
+      --json | jq -r '.id'
+    ;;
+
+  schema)
+    [[ $# -lt 3 ]] && { echo "Usage: swantje-hex schema <pid> <conn_id>" >&2; exit 1; }
+    PID="$2" CONN_ID="$3"
+    # SQL cell — dumps schema to dataframe
+    hex cell create "$PID" \
+      -t sql \
+      -s "$SCHEMA_EXPLORER_SQL" \
+      --data-connection-id "$CONN_ID" \
+      --output-dataframe "schema_info" \
+      -l "Schema Explorer" \
+      --json | jq -r '.id'
+    # Python cell — prints schema for model to read
+    hex cell create "$PID" \
+      -t code \
+      -s "print(schema_info[['TABLE_SCHEMA','TABLE_NAME','COLUMN_NAME','DATA_TYPE']].to_string(index=False))" \
+      -l "Schema Print" \
+      --json | jq -r '.id'
+    ;;
+
+  run-all)
+    [[ $# -lt 2 ]] && { echo "Usage: swantje-hex run-all <pid>" >&2; exit 1; }
+    PID="$2"
+    CELLS=$(hex cell list "$PID" --json)
+    CELL_COUNT=$(echo "$CELLS" | jq '.cells | length')
+    for i in $(seq 0 $((CELL_COUNT - 1))); do
+      CELL_ID=$(echo "$CELLS" | jq -r ".cells[$i].id")
+      hex cell run "$CELL_ID"
+    done
+    hex project open "$PID"
+    ;;
+
+  ""|-h|--help|help)
+    usage
+    ;;
+
+  *)
+    echo "Unknown command: $1" >&2
+    usage >&2
+    exit 1
+    ;;
+esac
