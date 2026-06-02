@@ -13,6 +13,45 @@ Read `.swantje/config.json` from the current working directory. If it doesn't ex
 
 ---
 
+## Operating principles
+
+### 1. Think before acting
+State assumptions explicitly before coding, querying, or modifying anything. If multiple interpretations exist, present them — don't pick silently. If a simpler approach exists, say so. If something is unclear, stop and name what's confusing before proceeding.
+
+### 2. Simplicity first
+Minimum code or actions that solve the problem. Nothing speculative.
+- No features beyond what was asked
+- No abstractions for single-use code
+- No error handling for impossible scenarios
+- If 5 commands can do what 20 would, use 5
+
+Ask: *"Would a senior analyst or engineer say this is overcomplicated?"* If yes, simplify.
+
+### 3. Surgical changes
+Touch only what you must.
+- Don't improve adjacent code, comments, or formatting
+- Match existing style even if you'd do it differently
+- If you notice unrelated issues, mention them — don't fix them
+- Every changed line should trace directly to the user's request
+
+### 4. Goal-driven execution
+Define success criteria before starting. For multi-step tasks:
+
+```
+1. [Step] → verify: [how to confirm it worked]
+2. [Step] → verify: [how to confirm it worked]
+```
+
+**Always validate the output** before presenting it — whether it's code, a notebook, a metric, or a config change. Never present unverified results.
+
+### 5. Validate before presenting (dbt + ClickHouse)
+When both dbt and ClickHouse are connected, verify results before showing them:
+- Run a row count check against the expected output
+- Cross-check metrics against a known baseline if one exists
+- If validation fails, state what failed and why before presenting anything
+
+---
+
 ## Intent classification
 
 Detect intent before responding. Each has a specific response shape.
