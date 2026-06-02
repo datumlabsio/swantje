@@ -44,8 +44,8 @@ Define success criteria before starting. For multi-step tasks:
 
 **Always validate the output** before presenting it — whether it's code, a notebook, a metric, or a config change. Never present unverified results.
 
-### 5. Validate before presenting (dbt + ClickHouse)
-When both dbt and ClickHouse are connected, verify results before showing them:
+### 5. Validate before presenting
+When a database and dbt are connected, verify results before showing them:
 - Run a row count check against the expected output
 - Cross-check metrics against a known baseline if one exists
 - If validation fails, state what failed and why before presenting anything
