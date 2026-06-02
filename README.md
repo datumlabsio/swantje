@@ -1,10 +1,10 @@
 # Swantje
 
-Data platform copilot for Claude Code. Connect your data stack and get three specialized agents that understand your environment.
+Data platform copilot for Claude Code. Connect your data stack and get a single assistant that handles analytics, pipeline engineering, and devops.
 
 ## What it does
 
-Swantje connects to your existing tools — ClickHouse, BigQuery, Dagster, dlt, dbt, GitHub — and gives you agents that can query your data, build pipelines, and diagnose infrastructure without needing to re-explain your setup every time.
+Swantje connects to your existing tools — ClickHouse, BigQuery, Dagster, dlt, dbt, GitHub, Hex — and gives you one assistant that understands your environment. Query data, build pipelines, diagnose failures — no switching agents, no re-explaining your setup.
 
 ## Install
 
@@ -19,6 +19,14 @@ Then run the onboarding wizard:
 /swantje:onboard
 ```
 
+## Assistant
+
+### `/swantje:assistant`
+One agent for everything:
+- **Analytics** — query your warehouse, explore schemas, explain data. When Hex is connected, creates and runs notebooks directly.
+- **Engineering** — build dlt pipelines, generate Dagster assets, write dbt models. Reads your existing code before generating.
+- **DevOps** — diagnose failures, review Dagster health, audit configs. Gives you root cause, not just the error.
+
 ## Connectors
 
 | Command | What it connects |
@@ -31,18 +39,7 @@ Then run the onboarding wizard:
 | `/swantje:connect-github` | GitHub org and repos |
 | `/swantje:connect-dbt` | dbt project |
 
-Connection config is stored in `.swantje/config.json` in your project. Secrets (passwords, tokens) stay in env vars — never written to files.
-
-## Agents
-
-### `/swantje:analyst`
-Queries your connected data warehouse, explores schemas, and explains data. Knows your dbt models so it can answer questions about where data comes from. **When Hex is connected, creates and runs notebooks directly** — no copy-pasting queries.
-
-### `/swantje:engineer`
-Builds and maintains pipelines. Generates dlt sources, Dagster assets, and dbt models. Reads your existing code before generating anything so it matches your conventions.
-
-### `/swantje:devops`
-Diagnoses pipeline failures, reviews Dagster deployment health, and audits infrastructure configs. Point it at an error and it explains the root cause.
+Connection config is stored in `.swantje/config.json` in your project. Secrets stay in env vars — never written to files.
 
 ## Requirements
 
@@ -51,7 +48,7 @@ Diagnoses pipeline failures, reviews Dagster deployment health, and audits infra
 
 ## Version
 
-`0.1.0` — Hex integration. Analyst agent now creates and runs notebooks directly when Hex is connected.
+`0.3.0` — Unified assistant. Single agent replaces analyst, engineer, and devops.
 
 ## Made by
 

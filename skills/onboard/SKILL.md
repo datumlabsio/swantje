@@ -56,15 +56,15 @@ For each connector the user selected, invoke the corresponding skill:
 
 Walk through them one by one in this session if the user wants — just invoke each skill inline.
 
-## Step 4 — Introduce the agents
+## Step 4 — Introduce the assistant
 
-Once at least one connector is set up, introduce the three agents:
+Once at least one connector is set up, introduce the assistant:
 
 ```
-/swantje:analyst   — query your data warehouse, explore schemas, run analytics
-/swantje:engineer  — build pipelines, write dlt/dbt code, manage Dagster jobs
-/swantje:devops    — diagnose infrastructure, review Dagster health, manage deployments
+/swantje:assistant — analytics, pipeline engineering, and devops in one agent
 ```
+
+It handles everything: querying data, building pipelines, diagnosing failures. No need to switch agents.
 
 ## Step 5 — Final check
 
