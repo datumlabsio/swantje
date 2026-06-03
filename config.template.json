@@ -1,6 +1,11 @@
 {
   "_comment": "Copy to .swantje/config.json in your project root. Add .swantje/config.json to .gitignore. Secrets go in env vars — see each connector's instructions.",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "glossary": {
+    "_comment": "Optional. Omit to use only the local .swantje/glossary.json file.",
+    "remote_url": null,
+    "local_override": true
+  },
   "connectors": {
     "clickhouse": {
       "enabled": false,

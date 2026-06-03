@@ -1,0 +1,196 @@
+{
+  "name": "westwise",
+  "description": "Westwise ClickHouse analytics layer \u2014 real schema + verified metrics",
+  "built_at": "2026-06-02T15:06:34.926115+00:00",
+  "schema_tables": [
+    "int_sales__deals_legacy_cleansed",
+    "int_sales__deals_information_legacy_cleansed",
+    "int_sales__agent_performance",
+    "int_sales__affiliate_performance",
+    "int_platform_billing",
+    "int_sales__cpl",
+    "int_marketing__cpc_lhp",
+    "int_sales__common_drops"
+  ],
+  "context_turn": {
+    "role": "assistant",
+    "content": "Config loaded from `.swantje/config.json`:\n\n```json\n{\n  \"connectors\": {\n    \"clickhouse\": {\n      \"enabled\": true,\n      \"host\": \"wh43usg2hz.us-central1.gcp.clickhouse.cloud\",\n      \"database\": \"analytics_prod\"\n    }\n  }\n}\n```\n\nConnected to ClickHouse (Westwise). Analytics layer: `analytics_prod`.\n\nKey tables:\n\n**int_sales__deals_legacy_cleansed** (19,030 rows)\n  \u2022 id (Nullable(String)) \u2014 Primary record identifier\n  \u2022 created_time (DateTime('America/Los_Angeles')) \u2014 Deal creation timestamp\n  \u2022 cost_per_click (Nullable(Int64)) \u2014 Cost per click value\n  \u2022 amount (Nullable(Int64)) \u2014 Deal amount\n  \u2022 closing_date (Nullable(Date)) \u2014 Deal closing date\n  \u2022 state (Nullable(String)) \u2014 State of the deal\n  \u2022 stage (Nullable(String)) \u2014 Current stage of the deal\n  \u2022 deal_name (Nullable(String)) \u2014 Name of the deal\n  \u2022 reason_for_loss__s (Nullable(String)) \u2014 Reason for loss if applicable\n  \u2022 expected_revenue (Nullable(Int64)) \u2014 Expected revenue from the deal\n  \u2022 modified_time (DateTime('America/Los_Angeles')) \u2014 Last modified timestamp\n  \u2022 first_name (Nullable(String)) \u2014 Contact first name\n  \u2022 +31 more\n\n**int_sales__deals_information_legacy_cleansed** (18,598 rows)\n  \u2022 id (String) \u2014 Primary record identifier\n  \u2022 created_time (DateTime('America/Los_Angeles')) \u2014 Deal creation time in America/Los_Angeles timezone\n  \u2022 cost_per_click (Nullable(Int64)) \u2014 Cost per click value\n  \u2022 amount (Nullable(Int64)) \u2014 Deal amount\n  \u2022 closing_date (Nullable(Date)) \u2014 Deal closing date\n  \u2022 state (Nullable(String)) \u2014 State of the deal\n  \u2022 stage (Nullable(String)) \u2014 Current stage of the deal\n  \u2022 deal_name (Nullable(String)) \u2014 Name of the deal\n  \u2022 reason_for_loss__s (Nullable(String)) \u2014 Reason for loss if applicable\n  \u2022 expected_revenue (Nullable(Int64)) \u2014 Expected revenue from the deal\n  \u2022 modified_time (DateTime('America/Los_Angeles')) \u2014 Last modified time in America/Los_Angeles timezone\n  \u2022 first_name (Nullable(String)) \u2014 Contact first name\n  \u2022 +28 more\n\n**int_sales__agent_performance** (5,657 rows)\n  \u2022 created_date (Date) \u2014 Date of activity\n  \u2022 agent_email (String) \u2014 Agent's email address\n  \u2022 ran_agent_id (String) \u2014 Randomized agent identifier from seed table\n  \u2022 total_forms (UInt64) \u2014 Count of form submissions with tracking key\n  \u2022 total_signed_deals (UInt64) \u2014 Count of signed deals across all qualifying stages\n  \u2022 total_call_deals (UInt64) \u2014 Count of signed deals from call sources\n  \u2022 total_form_deals (UInt64) \u2014 Count of signed deals from form sources\n  \u2022 one_time_call (UInt64) \u2014 Count of deals signed after only one call\n  \u2022 total_referrals (UInt64) \u2014 Count of warm transfer deals (all statuses)\n  \u2022 total_cx_referrals (UInt64) \u2014 Count of Warm Transfer Signed deals\n  \u2022 total_outgoing_calls (UInt64) \u2014 Count of outgoing calls made by agent\n  \u2022 total_incoming_calls (UInt64) \u2014 Count of incoming calls received by agent\n  \u2022 +6 more\n\n**int_sales__affiliate_performance** (5,947 rows)\n  \u2022 created_date (Nullable(Date))\n  \u2022 vendor (Nullable(String))\n  \u2022 matter_type (Nullable(String))\n  \u2022 formatted_call_type (Nullable(String))\n  \u2022 source_name (Nullable(String))\n  \u2022 total_affiliate_forms (UInt64)\n  \u2022 total_affiliate_distributed_leads (UInt64)\n  \u2022 total_affiliate_drop_leads (UInt64)\n  \u2022 total_affiliate_calls (UInt64)\n  \u2022 total_duration (Float64)\n  \u2022 warm_transfer_signed (UInt64)\n  \u2022 warm_transfer_not_signed (UInt64)\n  \u2022 +2 more\n\n**int_platform_billing** (2,899 rows)\n  \u2022 usage_date (Nullable(Date))\n  \u2022 platform (String)\n  \u2022 total_cost (Float64)\n\n**int_sales__cpl** (100 rows)\n  \u2022 date (Date) \u2014 Reporting date\n  \u2022 total_cost (Float64) \u2014 Total Google Ads spend for the day\n  \u2022 calls (UInt64) \u2014 Count of unique inbound call phone numbers\n  \u2022 forms (UInt64) \u2014 Count of form submissions without a vendor\n  \u2022 total_leads (UInt64) \u2014 Sum of calls and forms\n  \u2022 cost_per_lead (Nullable(Float64)) \u2014 Total cost divided by total leads\n\n**int_marketing__cpc_lhp** (100 rows)\n  \u2022 segments_date (Date) \u2014 The date of the marketing segment.\n  \u2022 campaignename (String) \u2014 The name of the marketing campaign.\n  \u2022 campaign_type (String) \u2014 The classification of the campaign as 'LHP' or 'Non-LHP' based on the campaign name.\n  \u2022 CPC (Nullable(Float64))\n\n**int_sales__common_drops** (? rows)\n  \u2022 assigned_firm_name (Nullable(String)) \u2014 Name of the assigned law firm\n  \u2022 top_drop_reason (Nullable(String)) \u2014 Most common drop reason for the firm\n  \u2022 top_reason_count (UInt64) \u2014 Count of the top drop reason\n  \u2022 total_drops (UInt64) \u2014 Total number of drops for the firm\n  \u2022 pct_of_firm_drops (Nullable(Float64)) \u2014 Percentage of total drops attributed to the top reason\n\nVerified ground-truth metrics (use these to validate model responses):\n  \u2022 Total deals in int_sales__deals_legacy_cleansed: **39574**\n  \u2022 Contract Signed deals: **323**\n  \u2022 Distinct active agents: **23**\n  \u2022 Distinct states in deals: **97**\n  \u2022 Total affiliate distributed leads: **5520**\n  \u2022 Most recent deal creation date: **2026-06-02**\n  \u2022 All distinct deal stages: **['Contract Sent', 'Contract Signed', 'Courier Request', 'Distributed', 'Dropped', 'Make Contact', 'New', 'Not Signed', 'Paid in full', 'Qualifying', 'Ready for distribution', 'Reengage', 'Referred', 'Rescore', 'Spam', 'Warm Transfer', 'Warm Transfer Drop', 'Warm Transfer Not Signed', 'Warm Transfer Signed']**\n\nReady."
+  },
+  "ground_truth": [
+    {
+      "id": "total_deals",
+      "label": "Total deals in int_sales__deals_legacy_cleansed",
+      "sql": "SELECT count() FROM analytics_prod.int_sales__deals_legacy_cleansed",
+      "description": "Total row count of deals table",
+      "value": 39574
+    },
+    {
+      "id": "signed_deals",
+      "label": "Contract Signed deals",
+      "sql": "SELECT count() FROM analytics_prod.int_sales__deals_legacy_cleansed WHERE stage = 'Contract Signed'",
+      "description": "Count of deals with stage = Contract Signed",
+      "value": 323
+    },
+    {
+      "id": "distinct_agents",
+      "label": "Distinct active agents",
+      "sql": "SELECT count(DISTINCT agent_email) FROM analytics_prod.int_sales__agent_performance",
+      "description": "Number of distinct agent emails in the performance table",
+      "value": 23
+    },
+    {
+      "id": "distinct_states",
+      "label": "Distinct states in deals",
+      "sql": "SELECT count(DISTINCT state) FROM analytics_prod.int_sales__deals_legacy_cleansed WHERE state IS NOT NULL",
+      "description": "Number of distinct US states present in deals",
+      "value": 97
+    },
+    {
+      "id": "total_affiliate_leads",
+      "label": "Total affiliate distributed leads",
+      "sql": "SELECT sum(total_affiliate_distributed_leads) FROM analytics_prod.int_sales__affiliate_performance",
+      "description": "Sum of all affiliate distributed leads",
+      "value": 5520
+    },
+    {
+      "id": "latest_deal_date",
+      "label": "Most recent deal creation date",
+      "sql": "SELECT max(toDate(created_time)) FROM analytics_prod.int_sales__deals_legacy_cleansed",
+      "description": "Latest date in the deals table",
+      "value": "2026-06-02"
+    },
+    {
+      "id": "deal_stages",
+      "label": "All distinct deal stages",
+      "sql": "SELECT groupArray(DISTINCT stage) FROM analytics_prod.int_sales__deals_legacy_cleansed WHERE stage IS NOT NULL",
+      "description": "List of all distinct stage values",
+      "value": [
+        "Contract Sent",
+        "Contract Signed",
+        "Courier Request",
+        "Distributed",
+        "Dropped",
+        "Make Contact",
+        "New",
+        "Not Signed",
+        "Paid in full",
+        "Qualifying",
+        "Ready for distribution",
+        "Reengage",
+        "Referred",
+        "Rescore",
+        "Spam",
+        "Warm Transfer",
+        "Warm Transfer Drop",
+        "Warm Transfer Not Signed",
+        "Warm Transfer Signed"
+      ]
+    }
+  ],
+  "grounded_cases": [
+    {
+      "id": "ww-metric-001",
+      "customer": "westwise",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "How many total deals do we have?",
+      "ground_truth_id": "total_deals",
+      "rubric": {
+        "number_first": "Response leads with a number",
+        "correct_value": "Number matches the ground-truth total_deals count",
+        "filters_in_parens": "Any scope filter noted in parentheses"
+      },
+      "must_have": [],
+      "must_not_have": [
+        "Here is",
+        "Let me"
+      ]
+    },
+    {
+      "id": "ww-metric-002",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "How many Contract Signed deals are there?",
+      "ground_truth_id": "signed_deals",
+      "rubric": {
+        "number_first": "Response leads with a number",
+        "correct_value": "Number matches the ground-truth signed_deals count (stage = 'Contract Signed')",
+        "correct_filter": "Filters on stage = 'Contract Signed', not 'Signed'"
+      },
+      "must_have": [],
+      "must_not_have": [],
+      "customer": "westwise"
+    },
+    {
+      "id": "ww-metric-003",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "How many distinct agents are in the performance table?",
+      "ground_truth_id": "distinct_agents",
+      "rubric": {
+        "number_first": "Response leads with a number",
+        "correct_value": "Number matches ground-truth distinct_agents count"
+      },
+      "must_have": [],
+      "must_not_have": [],
+      "customer": "westwise"
+    },
+    {
+      "id": "ww-lookup-001",
+      "category": "data_lookup",
+      "language": "en",
+      "prompt": "What are all the distinct deal stages?",
+      "ground_truth_id": "deal_stages",
+      "rubric": {
+        "lists_stages": "Lists the actual stage values (not a generic description)",
+        "correct_stages": "Stage values match the ground-truth deal_stages list",
+        "structured": "Output is a list or table, not prose"
+      },
+      "must_have": [],
+      "must_not_have": [],
+      "customer": "westwise"
+    },
+    {
+      "id": "ww-diagnostic-001",
+      "category": "diagnostic",
+      "language": "en",
+      "prompt": "Why would the first row in int_sales__deals_legacy_cleansed have a NULL state?",
+      "ground_truth_id": null,
+      "rubric": {
+        "hypothesis_first": "States most likely root cause (no state captured at creation, LEFT JOIN null, data quality)",
+        "references_correct_table": "References int_sales__deals_legacy_cleansed and the state column",
+        "check_query_provided": "Provides a ClickHouse query to investigate"
+      },
+      "must_have": [
+        "NULL",
+        "state"
+      ],
+      "must_not_have": [],
+      "customer": "westwise"
+    },
+    {
+      "id": "ww-sql-001",
+      "category": "sql_technical",
+      "language": "en",
+      "prompt": "Give me the SQL for total signed deals grouped by state, last 90 days",
+      "ground_truth_id": null,
+      "rubric": {
+        "raw_sql_only": "Returns a SQL block with comment header, no prose",
+        "correct_table": "Queries analytics_prod.int_sales__deals_legacy_cleansed",
+        "correct_filter": "Filters on stage = 'Signed' and created_time within 90 days",
+        "groups_by_state": "Groups by state column",
+        "clickhouse_dialect": "Uses ClickHouse syntax (toDate, now(), interval)"
+      },
+      "must_have": [
+        "```sql",
+        "Signed",
+        "state"
+      ],
+      "must_not_have": [
+        "Here is the",
+        "This query"
+      ],
+      "customer": "westwise"
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "created": "2026-06-02T16:48:05.621905+00:00",
+  "overall": 0.7139795918367347,
+  "by_category": {
+    "metric_exact_number": {
+      "score": 0.766,
+      "cases": [
+        "metric-001",
+        "metric-002",
+        "metric-003",
+        "metric-004",
+        "c2-metric-001"
+      ]
+    },
+    "config_change": {
+      "score": 0.5744444444444444,
+      "cases": [
+        "config-001",
+        "config-002",
+        "config-003",
+        "config-004",
+        "c2-config-001",
+        "c2-config-002",
+        "c2-config-003",
+        "c2-config-004",
+        "c2-config-005"
+      ]
+    },
+    "data_lookup": {
+      "score": 0.657,
+      "cases": [
+        "lookup-001",
+        "lookup-002",
+        "lookup-003",
+        "c2-lookup-001",
+        "c2-lookup-002"
+      ]
+    },
+    "status_check": {
+      "score": 0.6666666666666666,
+      "cases": [
+        "status-001",
+        "status-002",
+        "status-003"
+      ]
+    },
+    "diagnostic": {
+      "score": 0.906,
+      "cases": [
+        "diagnostic-001",
+        "diagnostic-002",
+        "diagnostic-003",
+        "c2-diagnostic-001",
+        "c2-diagnostic-002"
+      ]
+    },
+    "logic_explanation": {
+      "score": 0.6666666666666666,
+      "cases": [
+        "logic-001",
+        "logic-002",
+        "logic-003",
+        "c2-logic-001",
+        "c2-logic-002",
+        "c2-logic-003"
+      ]
+    },
+    "follow_up": {
+      "score": 0.9175,
+      "cases": [
+        "followup-001",
+        "followup-002",
+        "followup-003",
+        "c2-followup-001"
+      ]
+    },
+    "calculation_verification": {
+      "score": 0.75,
+      "cases": [
+        "calc-verify-001",
+        "calc-verify-002"
+      ]
+    },
+    "error_fix": {
+      "score": 0.6839999999999999,
+      "cases": [
+        "error-001",
+        "error-002",
+        "c2-error-001",
+        "c2-error-002",
+        "c2-error-003"
+      ]
+    },
+    "sql_technical": {
+      "score": 0.7766666666666667,
+      "cases": [
+        "sql-001",
+        "sql-002",
+        "sql-003"
+      ]
+    },
+    "glossary": {
+      "score": 0.625,
+      "cases": [
+        "c2-glossary-001",
+        "c2-glossary-002"
+      ]
+    }
+  },
+  "case_scores": {
+    "metric-001": 1.0,
+    "metric-002": 0.5,
+    "metric-003": 0.83,
+    "metric-004": 1.0,
+    "config-001": 0.5,
+    "config-002": 0.5,
+    "config-003": 1.0,
+    "config-004": 1.0,
+    "lookup-001": 0.875,
+    "lookup-002": 1.0,
+    "lookup-003": 0.33,
+    "status-001": 1.0,
+    "status-002": 1.0,
+    "status-003": 0.0,
+    "diagnostic-001": 0.9,
+    "diagnostic-002": 0.83,
+    "diagnostic-003": 1.0,
+    "logic-001": 0.625,
+    "logic-002": 1.0,
+    "logic-003": 0.83,
+    "followup-001": 1.0,
+    "followup-002": 1.0,
+    "followup-003": 1.0,
+    "calc-verify-001": 0.5,
+    "calc-verify-002": 1.0,
+    "error-001": 0.75,
+    "error-002": 0.67,
+    "sql-001": 1.0,
+    "sql-002": 0.5,
+    "sql-003": 0.83,
+    "c2-glossary-001": 0.25,
+    "c2-glossary-002": 1.0,
+    "c2-config-001": 0.25,
+    "c2-config-002": 1.0,
+    "c2-config-003": 0.25,
+    "c2-config-004": 0.17,
+    "c2-config-005": 0.5,
+    "c2-logic-001": 1.0,
+    "c2-logic-002": 0.375,
+    "c2-logic-003": 0.17,
+    "c2-error-001": 1.0,
+    "c2-error-002": 0.67,
+    "c2-error-003": 0.33,
+    "c2-diagnostic-001": 0.8,
+    "c2-diagnostic-002": 1.0,
+    "c2-metric-001": 0.5,
+    "c2-lookup-001": 0.83,
+    "c2-lookup-002": 0.25,
+    "c2-followup-001": 0.67
+  }
+}

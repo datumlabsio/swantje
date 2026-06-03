@@ -56,7 +56,24 @@ For each connector the user selected, invoke the corresponding skill:
 
 Walk through them one by one in this session if the user wants — just invoke each skill inline.
 
-## Step 4 — Introduce the assistant
+## Step 4 — Seed the glossary
+
+Ask: "Does your team use domain-specific or non-English terms when talking about your data? For example, field names, quote statuses, role names, or business concepts?"
+
+If yes — collect up to 10 terms now:
+- For each term: ask what it means in plain English, which table and field it maps to (if known).
+- Write the results to `.swantje/glossary.json`.
+
+If no — create an empty `.swantje/glossary.json`:
+```json
+{ "terms": {} }
+```
+
+Tell the user: the assistant will add new terms automatically when it encounters unfamiliar ones. They can also run `/swantje:glossary` to review, add, or edit terms at any time.
+
+Suggest committing `.swantje/glossary.json` to their repo (unlike `config.json`, it contains no secrets).
+
+## Step 5 — Introduce the assistant
 
 Once at least one connector is set up, introduce the assistant:
 
@@ -66,7 +83,7 @@ Once at least one connector is set up, introduce the assistant:
 
 It handles everything: querying data, building pipelines, diagnosing failures. No need to switch agents.
 
-## Step 5 — Final check
+## Step 6 — Final check
 
 Show a summary of what's connected. Remind the user to add `.swantje/config.json` to `.gitignore` if it contains any non-public values.
 

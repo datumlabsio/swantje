@@ -1,0 +1,833 @@
+{
+  "meta": {
+    "version": "1.2.0",
+    "description": "Swantje assistant skill eval suite — generalized from real user sessions across two customers",
+    "source": "Customer 1 (C1): 32 Hex sessions, solar/energy sales, Dutch+English. Customer 2 (C2): 54 Hex sessions, ad-tech/legal marketing, English-only, heavy on dashboard engineering.",
+    "categories": {
+      "metric_exact_number": "Response must lead with a number. Filters in parentheses. No prose before the number.",
+      "config_change": "Execute immediately. One-line confirm only. No unsolicited explanation. No extra features.",
+      "data_lookup": "Row count on line 1. Table with ≤8 columns. No metric-style lead.",
+      "status_check": "Return status value(s) directly. Table format for bulk. No re-asking what status means.",
+      "diagnostic": "Must follow: Hypothesis → Evidence → Conclusion → Fix. Never skip straight to fix.",
+      "logic_explanation": "Plain language + field names. ≤150 words. No SQL dump unless asked.",
+      "follow_up": "Bare affirmation → execute previous action. Entity sub → re-run with substitution. No re-confirmation.",
+      "calculation_verification": "Cross-check against data. State pass or fail. Show discrepancy if any.",
+      "error_fix": "Diagnostic format. Before/after diff if modifying code.",
+      "sql_technical": "Raw SQL block only. Comment header. No prose.",
+      "glossary": "Unknown term → ask once, offer to save to glossary, then proceed. Known term (in glossary) → resolve silently and execute."
+    }
+  },
+  "cases": [
+
+    {
+      "id": "metric-001",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "How many customers signed a contract last month?",
+      "prior_context": null,
+      "rubric": {
+        "number_first": "Response leads with a bare number (digits) before any other text",
+        "filters_in_parens": "Time filter appears in parentheses, e.g. *(last 30 days)*",
+        "no_prose_before_number": "No introductory sentence or question before the number",
+        "no_table_instead_of_number": "Response does not lead with a table when a single metric was asked"
+      },
+      "must_have": ["^\\d", "\\("],
+      "must_not_have": ["Here is", "Let me", "I found"]
+    },
+
+    {
+      "id": "metric-002",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "What is the total revenue for Q1 2026?",
+      "prior_context": null,
+      "rubric": {
+        "number_first": "Response leads with a currency value or number",
+        "filters_in_parens": "Quarter filter noted in parentheses",
+        "no_prose_before_number": "No introductory text before the metric"
+      },
+      "must_have": ["\\("],
+      "must_not_have": ["Here is", "Let me", "To answer"]
+    },
+
+    {
+      "id": "metric-003",
+      "category": "metric_exact_number",
+      "language": "nl",
+      "prompt": "Hoeveel offertes zijn er dit jaar geaccepteerd?",
+      "prior_context": null,
+      "rubric": {
+        "number_first": "Response leads with a number (handles Dutch query in English or Dutch)",
+        "filters_in_parens": "Year filter in parentheses",
+        "language_handling": "Model handles Dutch input without asking for translation"
+      },
+      "must_have": ["\\("],
+      "must_not_have": ["I don't understand", "Please provide in English"]
+    },
+
+    {
+      "id": "metric-004",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "What percentage of quotes are still open?",
+      "prior_context": null,
+      "rubric": {
+        "number_first": "Response leads with a percentage",
+        "filters_in_parens": "Scope filter noted",
+        "format": "Number is formatted as X% not a decimal"
+      },
+      "must_have": ["%"],
+      "must_not_have": ["Here is", "To calculate"]
+    },
+
+    {
+      "id": "config-001",
+      "category": "config_change",
+      "language": "en",
+      "prompt": "Add a column for 'days since last contact' to the customers table in the Hex notebook",
+      "prior_context": null,
+      "rubric": {
+        "immediate_execution": "Executes the change without asking for confirmation",
+        "one_line_confirm": "Confirmation is one line (not a paragraph)",
+        "no_extra_features": "Does not add sorting, coloring, or other unrequested features",
+        "no_explanation": "Does not explain what days_since_last_contact means unsolicited"
+      },
+      "must_have": [],
+      "must_not_have": ["Should I", "Do you want me to", "Would you like"]
+    },
+
+    {
+      "id": "config-002",
+      "category": "config_change",
+      "language": "nl",
+      "prompt": "Voeg een kolom toe met de annuleringsstatus",
+      "prior_context": null,
+      "rubric": {
+        "asks_or_resolves_unknown_term": "Either asks what 'annuleringsstatus' means (correct — unknown term not in glossary) OR resolves it from a loaded glossary and executes immediately",
+        "one_line_confirm_or_question": "Response is either a short clarifying question or a one-line confirm — not a multi-paragraph explanation",
+        "offers_glossary": "If it asks, it offers to save the definition to the glossary for future sessions"
+      },
+      "must_have": [],
+      "must_not_have": ["I cannot", "I don't understand Dutch"]
+    },
+
+    {
+      "id": "config-003",
+      "category": "config_change",
+      "language": "en",
+      "prompt": "Change the default time filter from 30 days to 90 days",
+      "prior_context": null,
+      "rubric": {
+        "surgical": "Only changes the time filter, nothing else",
+        "no_refactor": "Does not refactor surrounding code",
+        "immediate": "Does it, does not ask 'are you sure?'"
+      },
+      "must_have": [],
+      "must_not_have": ["Are you sure", "This will affect", "Before I make"]
+    },
+
+    {
+      "id": "config-004",
+      "category": "config_change",
+      "language": "en",
+      "prompt": "Okay, change it",
+      "prior_context": {
+        "assistant": "I can rename the column from `revenue_gross` to `total_revenue`. Want me to proceed?",
+        "user": "Okay, change it"
+      },
+      "rubric": {
+        "executes_on_affirmation": "Treats bare affirmation as confirmation and executes",
+        "no_reconfirmation": "Does not ask 'are you sure?' or repeat the plan"
+      },
+      "must_have": [],
+      "must_not_have": ["To confirm", "Just to be clear", "Are you sure"]
+    },
+
+    {
+      "id": "lookup-001",
+      "category": "data_lookup",
+      "language": "en",
+      "prompt": "Show me all open quotes for sales rep Maria",
+      "prior_context": null,
+      "rubric": {
+        "row_count_first": "First line or near-first contains row count (e.g. '14 rows' or '14 results')",
+        "table_format": "Returns a markdown table, not a bulleted list or SQL block",
+        "column_limit": "Table has ≤8 columns",
+        "no_sql_for_user": "Does not give SQL for the user to run — executes and shows results"
+      },
+      "must_have": ["|"],
+      "must_not_have": ["Here's a query", "You can run", "run this query"]
+    },
+
+    {
+      "id": "lookup-002",
+      "category": "data_lookup",
+      "language": "nl",
+      "prompt": "Geef mij een tabel met offertenummer, planner en closer",
+      "prior_context": null,
+      "rubric": {
+        "row_count_first": "Row count stated before the table",
+        "table_format": "Returns markdown table",
+        "column_match": "Table includes offertenummer/quote_number, planner, and closer columns"
+      },
+      "must_have": ["|"],
+      "must_not_have": []
+    },
+
+    {
+      "id": "lookup-003",
+      "category": "data_lookup",
+      "language": "en",
+      "prompt": "List all customers who have a signed quote but no invoice yet",
+      "prior_context": null,
+      "rubric": {
+        "row_count_first": "Row count on line 1 or 2",
+        "table_format": "Table format, not prose",
+        "no_explanation_preamble": "Does not explain what 'signed quote' means before showing data"
+      },
+      "must_have": ["|"],
+      "must_not_have": ["A signed quote is", "This means"]
+    },
+
+    {
+      "id": "status-001",
+      "category": "status_check",
+      "language": "nl",
+      "prompt": "Q2026031393 Q2026021035 Q2026010837 — Wat is de status van deze offertenummers?",
+      "prior_context": null,
+      "rubric": {
+        "status_per_quote": "Returns a status for each quote number provided",
+        "table_format": "Bulk status check returns a table (quote → status), not prose",
+        "no_filter_question": "Does not ask 'what kind of status do you want?'"
+      },
+      "must_have": ["|"],
+      "must_not_have": ["What type of status", "Can you clarify"]
+    },
+
+    {
+      "id": "status-002",
+      "category": "status_check",
+      "language": "en",
+      "prompt": "What is the status of the daily pipeline run?",
+      "prior_context": null,
+      "note": "No live Dagster state in eval context. Correct behavior: acknowledge the data isn't available in this context, state what to check (Dagster UI / logs), and keep it to 1-2 lines. Must NOT pad with a tutorial on how pipelines work.",
+      "rubric": {
+        "acknowledges_no_live_data": "Acknowledges it cannot see live pipeline state in this context (rather than fabricating a status)",
+        "points_to_right_place": "Tells the user where to check (e.g. Dagster UI, logs) in one line",
+        "no_tutorial": "Does not explain what a pipeline run is or pad with background prose"
+      },
+      "must_have": [],
+      "must_not_have": ["The pipeline is responsible for", "As you may know", "A pipeline run is"]
+    },
+
+    {
+      "id": "status-003",
+      "category": "status_check",
+      "language": "en",
+      "prompt": "Are the sales reps Jasper and Anna active in the system?",
+      "prior_context": null,
+      "rubric": {
+        "per_person_answer": "States status for each named person",
+        "direct_answer": "Answers yes/no/status without preamble"
+      },
+      "must_have": [],
+      "must_not_have": ["I would need to check", "Let me look into this"]
+    },
+
+    {
+      "id": "diagnostic-001",
+      "category": "diagnostic",
+      "language": "en",
+      "prompt": "Why is the revenue number different from what I see in the CRM?",
+      "prior_context": null,
+      "rubric": {
+        "hypothesis_first": "Response starts with a stated hypothesis (most likely root cause)",
+        "evidence_section": "Has an Evidence section with specifics from the data/code",
+        "conclusion_section": "Has a Conclusion section confirming the cause",
+        "fix_section": "Has a Fix section with a proposed action",
+        "no_skip_to_fix": "Does not jump straight to the fix without hypothesis/evidence"
+      },
+      "must_have": ["Hypothesis", "Evidence", "Conclusion", "Fix"],
+      "must_not_have": []
+    },
+
+    {
+      "id": "diagnostic-002",
+      "category": "diagnostic",
+      "language": "en",
+      "prompt": "I believe there is a separate column for who is the closer. Can you investigate?",
+      "prior_context": null,
+      "rubric": {
+        "investigates": "Actually investigates (queries schema or data) rather than asking for more info",
+        "hypothesis_first": "States what it expects to find before confirming",
+        "evidence_shown": "Shows evidence from the data (column names, sample values)"
+      },
+      "must_have": [],
+      "must_not_have": ["Can you tell me more", "Which column did you have in mind"]
+    },
+
+    {
+      "id": "diagnostic-003",
+      "category": "diagnostic",
+      "language": "nl",
+      "prompt": "Waarom ziet Yardo zijn eigen sales niet in het dashboard?",
+      "prior_context": null,
+      "rubric": {
+        "hypothesis_first": "States most likely cause (attribution logic, filter, email mismatch)",
+        "investigates": "Checks user config, filters, or attribution logic",
+        "fix_proposed": "Proposes a concrete fix"
+      },
+      "must_have": [],
+      "must_not_have": ["I don't know", "Cannot determine"]
+    },
+
+    {
+      "id": "logic-001",
+      "category": "logic_explanation",
+      "language": "en",
+      "prompt": "How is the deviation percentage calculated?",
+      "prior_context": null,
+      "rubric": {
+        "plain_language": "Explains in plain language, not SQL",
+        "field_names": "Includes field names used in the calculation",
+        "concise": "≤150 words",
+        "no_sql_dump": "Does not dump a SQL code block"
+      },
+      "must_have": [],
+      "must_not_have": ["```sql", "```python"]
+    },
+
+    {
+      "id": "logic-002",
+      "category": "logic_explanation",
+      "language": "en",
+      "prompt": "What counts as a signed quote in this system?",
+      "prior_context": null,
+      "rubric": {
+        "plain_language": "Plain-language definition with field names",
+        "concise": "Short answer, not a data model essay",
+        "field_referenced": "References the actual status field name"
+      },
+      "must_have": [],
+      "must_not_have": ["As you may know", "In general, a signed quote"]
+    },
+
+    {
+      "id": "logic-003",
+      "category": "logic_explanation",
+      "language": "nl",
+      "prompt": "Wat is de logica van een live afspraak?",
+      "prior_context": null,
+      "rubric": {
+        "handles_dutch": "Handles Dutch query, answers in Dutch or English without complaint",
+        "plain_language": "Definition without SQL",
+        "concise": "Short, ≤150 words"
+      },
+      "must_have": [],
+      "must_not_have": ["I don't understand Dutch", "Please ask in English"]
+    },
+
+    {
+      "id": "followup-001",
+      "category": "follow_up",
+      "language": "nl",
+      "prompt": "Dat het als een kolom bij die tabel moet staan idd",
+      "prior_context": {
+        "assistant": "I can add the CTPID as a column to the invoices table. Should I proceed?",
+        "user": "Dat het als een kolom bij die tabel moet staan idd"
+      },
+      "rubric": {
+        "executes_without_reconfirm": "Executes the add-column action without re-asking",
+        "no_translation_ask": "Does not ask user to repeat in English",
+        "no_clarification": "Does not say 'just to confirm, you want me to...'"
+      },
+      "must_have": [],
+      "must_not_have": ["Just to confirm", "To clarify", "Did you mean"]
+    },
+
+    {
+      "id": "followup-002",
+      "category": "follow_up",
+      "language": "en",
+      "prompt": "and for last week?",
+      "prior_context": {
+        "assistant": "**4,832** *(last 30 days, excl. nulls)*\n\nSigned quotes in the last 30 days.",
+        "user": "and for last week?"
+      },
+      "rubric": {
+        "entity_substitution": "Re-runs same metric with 'last week' substituted for 'last 30 days'",
+        "no_explanation": "Does not explain what it's doing, just returns the number",
+        "number_first": "Still leads with a number"
+      },
+      "must_have": ["last week"],
+      "must_not_have": ["I will now", "Let me re-run"]
+    },
+
+    {
+      "id": "followup-003",
+      "category": "follow_up",
+      "language": "en",
+      "prompt": "yes",
+      "prior_context": {
+        "assistant": "I can create a Hex notebook with the revenue trend for Q1 2026. Want me to proceed?",
+        "user": "yes"
+      },
+      "rubric": {
+        "executes": "Executes the notebook creation action",
+        "no_reconfirm": "Does not repeat the plan or ask again"
+      },
+      "must_have": [],
+      "must_not_have": ["To confirm", "Are you sure", "Just to make sure"]
+    },
+
+    {
+      "id": "calc-verify-001",
+      "category": "calculation_verification",
+      "language": "en",
+      "prompt": "Double-check: total signed quotes this month should be 47",
+      "prior_context": null,
+      "rubric": {
+        "checks_data": "Actually queries the data to verify",
+        "states_pass_or_fail": "Clearly states whether 47 matches or not",
+        "shows_discrepancy": "If numbers differ, shows the actual value"
+      },
+      "must_have": [],
+      "must_not_have": ["I cannot verify", "I'll trust your number"]
+    },
+
+    {
+      "id": "calc-verify-002",
+      "category": "calculation_verification",
+      "language": "nl",
+      "prompt": "Installatie: 13 offertes — €105.030, hoeveel unieke klanten waren dit?",
+      "prior_context": null,
+      "rubric": {
+        "distinct_count": "Returns distinct customer count for the described filter",
+        "number_first": "Leads with the number",
+        "understands_context": "Understands the breakdown is a filter, not a list to sum"
+      },
+      "must_have": [],
+      "must_not_have": ["I'm not sure what you mean"]
+    },
+
+    {
+      "id": "error-001",
+      "category": "error_fix",
+      "language": "en",
+      "prompt": "Verify, fix, and explain: TypeError: Object of type NAType is not JSON serializable",
+      "prior_context": null,
+      "rubric": {
+        "root_cause": "Identifies pandas NA/NaT as the cause",
+        "fix_shown": "Shows a concrete code fix (fillna, replace, or astype conversion)",
+        "before_after": "Shows before/after diff or replacement code",
+        "concise_explanation": "Brief explanation of why NA is not JSON serializable"
+      },
+      "must_have": ["NA", "None"],
+      "must_not_have": []
+    },
+
+    {
+      "id": "error-002",
+      "category": "error_fix",
+      "language": "en",
+      "prompt": "Batch upload failing: invalid input syntax for type numeric (euro currency formatting)",
+      "prior_context": null,
+      "rubric": {
+        "root_cause": "Identifies € symbol or comma-as-decimal as the cause",
+        "fix_shown": "Shows string replacement or parsing fix",
+        "before_after": "Code diff or replacement shown"
+      },
+      "must_have": [],
+      "must_not_have": ["I'm not sure", "Could you share the code"]
+    },
+
+    {
+      "id": "sql-001",
+      "category": "sql_technical",
+      "language": "nl",
+      "prompt": "Geef mij de volledige SQL logica, ik moet het doorzetten naar mijn developer",
+      "prior_context": {
+        "assistant": "**342** *(signed quotes, last 30 days)*",
+        "user": "Geef mij de volledige SQL logica, ik moet het doorzetten naar mijn developer"
+      },
+      "rubric": {
+        "raw_sql_only": "Returns a raw SQL block with no prose explanation",
+        "comment_header": "SQL block starts with a comment header",
+        "no_prose": "No prose after the SQL block explaining what it does"
+      },
+      "must_have": ["```sql", "--"],
+      "must_not_have": ["This query does", "The SQL above", "Let me explain"]
+    },
+
+    {
+      "id": "sql-002",
+      "category": "sql_technical",
+      "language": "en",
+      "prompt": "Write me the query for monthly revenue by sales rep for Q1 2026",
+      "prior_context": null,
+      "rubric": {
+        "raw_sql_only": "Returns SQL block, minimal prose",
+        "comment_header": "Comment at top of SQL block",
+        "correct_grouping": "SQL groups by sales rep and month"
+      },
+      "must_have": ["```sql", "GROUP BY"],
+      "must_not_have": []
+    },
+
+    {
+      "id": "sql-003",
+      "category": "sql_technical",
+      "language": "nl",
+      "prompt": "Geef logica als tekst",
+      "prior_context": {
+        "assistant": "```sql\n-- Monthly revenue by closer\nSELECT closer, SUM(revenue) FROM quotes WHERE status = 'signed' GROUP BY 1\n```",
+        "user": "Geef logica als tekst"
+      },
+      "rubric": {
+        "plain_text_logic": "Explains the logic in plain language (not SQL)",
+        "concise": "Short explanation, not a tutorial",
+        "handles_dutch": "Understands 'als tekst' = 'as text/plain language'"
+      },
+      "must_have": [],
+      "must_not_have": ["```sql"]
+    },
+
+    {
+      "id": "c2-glossary-001",
+      "category": "glossary",
+      "language": "nl",
+      "prompt": "Voeg een kolom toe met de inplanstatus",
+      "prior_context": null,
+      "note": "Term 'inplanstatus' is NOT in the eval glossary context. Correct behavior: ask what it means, offer to save to glossary, then proceed once defined.",
+      "rubric": {
+        "asks_for_definition": "Asks what 'inplanstatus' means rather than guessing silently or refusing",
+        "offers_to_save": "Offers to save the term to the glossary (.swantje/glossary.json) for future sessions",
+        "proceeds_after_defining": "Indicates it will execute the column add once the user defines the term",
+        "does_not_refuse": "Does not say it cannot handle Dutch or cannot proceed"
+      },
+      "must_have": [],
+      "must_not_have": ["I cannot", "I don't understand", "Please provide in English"]
+    },
+
+    {
+      "id": "c2-glossary-002",
+      "category": "glossary",
+      "language": "nl",
+      "prompt": "Hoeveel live afspraken zijn er deze maand?",
+      "prior_context": null,
+      "note": "Term 'live afspraak' IS in the eval glossary context (appointment_type = 'live'). Correct behavior: no clarifying question, treats it as a metric query, leads with a number or SQL. Silent resolution — does NOT need to announce 'I found this in the glossary'.",
+      "rubric": {
+        "no_clarification_question": "Does not ask what 'live afspraak' means — proceeds without asking",
+        "metric_or_query": "Treats this as a metric query (returns a number, SQL, or row count) — not an explanation",
+        "does_not_refuse": "Does not say it cannot handle the term or needs more info"
+      },
+      "must_have": [],
+      "must_not_have": ["What do you mean by", "Can you clarify", "what is a live afspraak", "I cannot"]
+    },
+
+    {
+      "id": "c2-config-001",
+      "customer": "c2",
+      "category": "config_change",
+      "subcategory": "add_feature",
+      "language": "en",
+      "prompt": "Add a widget and column showing branded vs non-branded spend breakdown",
+      "prior_context": null,
+      "rubric": {
+        "immediate_execution": "Executes immediately without asking for confirmation",
+        "one_line_confirm": "Confirms in one line after doing it",
+        "no_scope_creep": "Does not add extra breakdowns, filters, or charts beyond what was asked",
+        "no_explanation_preamble": "Does not explain what branded spend is before executing"
+      },
+      "must_have": [],
+      "must_not_have": ["Should I", "Do you want me to", "Would you like", "Before I"]
+    },
+
+    {
+      "id": "c2-config-002",
+      "customer": "c2",
+      "category": "config_change",
+      "subcategory": "add_to_existing",
+      "language": "en",
+      "prompt": "Please also add those columns to the heatmap tab",
+      "prior_context": {
+        "assistant": "Done — added branded/non-branded spend columns to the Overview table.",
+        "user": "Please also add those columns to the heatmap tab"
+      },
+      "rubric": {
+        "resolves_those_columns": "Understands 'those columns' refers to the branded/non-branded columns just added",
+        "executes_immediately": "Does not ask which columns or which heatmap",
+        "one_line_confirm": "Short confirm only"
+      },
+      "must_have": [],
+      "must_not_have": ["Which columns", "Can you clarify", "Which heatmap"]
+    },
+
+    {
+      "id": "c2-config-003",
+      "customer": "c2",
+      "category": "config_change",
+      "subcategory": "build_feature",
+      "language": "en",
+      "prompt": "Rebuild the Spend by Cohort tab so the cohort label is the month the ad group was created (from the name suffix), not the first-spend month",
+      "prior_context": null,
+      "rubric": {
+        "immediate_execution": "Executes the rebuild without asking to confirm the interpretation",
+        "understands_cohort_redefinition": "Understands cohort = creation month from ad group name suffix, not first spend month",
+        "surgical": "Only changes the cohort definition, not the overall tab layout",
+        "one_line_confirm": "Short confirm after doing it"
+      },
+      "must_have": [],
+      "must_not_have": ["Are you sure", "Do you want me to confirm", "Should I proceed"]
+    },
+
+    {
+      "id": "c2-config-004",
+      "customer": "c2",
+      "category": "config_change",
+      "subcategory": "formatting",
+      "language": "en",
+      "prompt": "Order the cohort months in ascending order on all tables",
+      "prior_context": null,
+      "rubric": {
+        "immediate_execution": "Applies the sort order without asking which tables",
+        "all_tables": "Applies to all tables, not just one",
+        "one_line_confirm": "Short confirm only — does not explain what ascending order means"
+      },
+      "must_have": [],
+      "must_not_have": ["Which table", "Do you mean", "ascending means"]
+    },
+
+    {
+      "id": "c2-config-005",
+      "customer": "c2",
+      "category": "config_change",
+      "subcategory": "add_documentation",
+      "language": "en",
+      "prompt": "Add a markdown cell explaining what Creation Month means on this dashboard",
+      "prior_context": null,
+      "rubric": {
+        "immediate_execution": "Writes the markdown cell without asking what to say",
+        "concise_definition": "Definition is ≤3 sentences — not a long explainer",
+        "one_line_confirm": "Short confirm after adding"
+      },
+      "must_have": [],
+      "must_not_have": ["What would you like me to write", "How long should", "Should I include"]
+    },
+
+    {
+      "id": "c2-logic-001",
+      "customer": "c2",
+      "category": "logic_explanation",
+      "subcategory": "documentation",
+      "language": "en",
+      "prompt": "Give details about what each cell is about, why it exists, and what SQL queries it runs so I can recreate the notebook",
+      "prior_context": null,
+      "rubric": {
+        "covers_each_cell": "Describes each cell (or cell type) — not just one",
+        "includes_sql": "Shows or summarises the SQL for SQL cells",
+        "plain_language": "Purpose of each cell explained in plain English",
+        "structured": "Output is structured (table or numbered list) — not a wall of prose"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+
+    {
+      "id": "c2-logic-002",
+      "customer": "c2",
+      "category": "logic_explanation",
+      "subcategory": "how_to",
+      "language": "en",
+      "prompt": "How do I create a ClickHouse user? Do I need a separate user per database?",
+      "prior_context": null,
+      "rubric": {
+        "answers_both_questions": "Answers both: how to create a user AND whether one user per database is needed",
+        "plain_language": "Plain language, not raw SQL docs",
+        "concise": "≤150 words total",
+        "no_sql_dump": "Does not dump a long SQL block unless the command itself is short"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+
+    {
+      "id": "c2-logic-003",
+      "customer": "c2",
+      "category": "logic_explanation",
+      "subcategory": "methodology",
+      "language": "en",
+      "prompt": "If the attribution table used CPC traffic as the denominator instead of total sessions, what would the conversion rate be?",
+      "prior_context": null,
+      "rubric": {
+        "answers_the_hypothetical": "Explains what would change in the calculation, not just how conversion rate is defined",
+        "shows_formula_or_sql": "Shows the formula or SQL difference",
+        "concise": "Does not turn into a lecture on attribution methodology"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+
+    {
+      "id": "c2-error-001",
+      "customer": "c2",
+      "category": "error_fix",
+      "subcategory": "sql_error",
+      "language": "en",
+      "prompt": "Verify, fix, and explain: parameter argument/count mismatch in the Google Ads call detail query",
+      "prior_context": null,
+      "rubric": {
+        "hypothesis_first": "States the most likely cause (wrong number of args to a function)",
+        "fix_shown": "Shows the corrected SQL or function call",
+        "before_after": "Before/after diff or replacement snippet shown",
+        "concise_explanation": "Brief explanation — does not pad"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+
+    {
+      "id": "c2-error-002",
+      "customer": "c2",
+      "category": "error_fix",
+      "subcategory": "oauth_error",
+      "language": "en",
+      "prompt": "Step 3 Error 400: redirect_uri_mismatch — OAuth 2.0 policy compliance error when connecting BigQuery",
+      "prior_context": null,
+      "rubric": {
+        "root_cause": "Identifies redirect URI misconfiguration as the cause",
+        "fix_shown": "Tells user exactly what to change (add the correct URI to the OAuth client)",
+        "no_vague_advice": "Does not say 'check your OAuth settings' without specifics"
+      },
+      "must_have": ["redirect_uri", "console"],
+      "must_not_have": ["I'm not sure", "you may need to check"]
+    },
+
+    {
+      "id": "c2-error-003",
+      "customer": "c2",
+      "category": "error_fix",
+      "subcategory": "app_bugs",
+      "language": "en",
+      "prompt": "Many widgets are showing unexpectedly large numbers — there seems to be a bug",
+      "prior_context": null,
+      "rubric": {
+        "hypothesis_first": "States the most likely cause (fan-out from a join, missing dedup, aggregation issue)",
+        "investigates": "Investigates the data or SQL rather than asking the user to describe the bug further",
+        "fix_proposed": "Proposes a concrete fix or diagnostic query"
+      },
+      "must_have": [],
+      "must_not_have": ["Can you describe the bug", "Which widgets", "What do you mean by large"]
+    },
+
+    {
+      "id": "c2-diagnostic-001",
+      "customer": "c2",
+      "category": "diagnostic",
+      "subcategory": "data_discrepancy",
+      "language": "en",
+      "prompt": "A GCLID shows in Google Ads and our data warehouse but not in the CallRail lookup — why?",
+      "prior_context": null,
+      "rubric": {
+        "hypothesis_first": "States most likely cause first (propagation delay, field mapping, null in CallRail)",
+        "evidence_section": "Has an Evidence section",
+        "conclusion_section": "Has a Conclusion section",
+        "fix_section": "Has a Fix or next-step section",
+        "no_skip_to_fix": "Does not jump straight to fix"
+      },
+      "must_have": ["Hypothesis", "Evidence", "Conclusion"],
+      "must_not_have": []
+    },
+
+    {
+      "id": "c2-diagnostic-002",
+      "customer": "c2",
+      "category": "diagnostic",
+      "subcategory": "data_discrepancy",
+      "language": "en",
+      "prompt": "Why does the first row have a Null value — is this from the form source table? Give me a query to check in ClickHouse",
+      "prior_context": null,
+      "rubric": {
+        "hypothesis_first": "States why null is likely appearing (LEFT JOIN, missing record in source)",
+        "provides_query": "Provides a ClickHouse query to investigate",
+        "query_correct_dialect": "Query uses ClickHouse syntax (not BigQuery or generic SQL)"
+      },
+      "must_have": ["NULL", "SELECT"],
+      "must_not_have": []
+    },
+
+    {
+      "id": "c2-metric-001",
+      "customer": "c2",
+      "category": "metric_exact_number",
+      "subcategory": "kpi_snapshot",
+      "language": "en",
+      "prompt": "What is the total CPC spend and number of clicks for the last 30 days?",
+      "prior_context": null,
+      "rubric": {
+        "number_first": "Leads with numbers (spend + clicks), not a preamble",
+        "both_metrics": "Returns both spend and click count, not just one",
+        "filters_in_parens": "Time filter noted in parentheses",
+        "no_prose_before": "No introductory sentence before the numbers"
+      },
+      "must_have": ["\\("],
+      "must_not_have": ["Here is", "Let me", "To answer"]
+    },
+
+    {
+      "id": "c2-lookup-001",
+      "customer": "c2",
+      "category": "data_lookup",
+      "subcategory": "schema_exploration",
+      "language": "en",
+      "prompt": "Show me the columns available in the stg_google_ads__campaigns table.",
+      "prior_context": null,
+      "rubric": {
+        "returns_column_list": "Returns a list of column names (not SQL for the user to run)",
+        "structured": "Output is structured (table or list), not prose",
+        "no_preamble": "Does not explain what Google Ads is before showing the schema"
+      },
+      "must_have": ["|"],
+      "must_not_have": ["Here's a query you can run", "You can run the following"]
+    },
+
+    {
+      "id": "c2-lookup-002",
+      "customer": "c2",
+      "category": "data_lookup",
+      "subcategory": "data_source",
+      "language": "en",
+      "prompt": "List all deals that are in the 'Dropped' stage — show deal name, state, and drop reason.",
+      "prior_context": null,
+      "rubric": {
+        "executes_and_shows_table": "Returns a table of results, not SQL for the user to run",
+        "row_count_first": "States row count before or above the table",
+        "correct_columns": "Table includes deal_name/name, state, and drop_reason columns",
+        "no_sql_for_user": "Does not say 'run this query' or give a SQL block as the primary response"
+      },
+      "must_have": ["|"],
+      "must_not_have": ["Here's a query you can run", "You can run the following", "execute this"]
+    },
+
+    {
+      "id": "c2-followup-001",
+      "customer": "c2",
+      "category": "follow_up",
+      "subcategory": "continuation",
+      "language": "en",
+      "prompt": "Yes, fold it into any click ID",
+      "prior_context": {
+        "assistant": "I can join the gbraids column into the click ID lookup. Should I proceed?",
+        "user": "Yes, fold it into any click ID"
+      },
+      "rubric": {
+        "executes_on_affirmation": "Treats 'yes' as confirmation and executes the join",
+        "no_reconfirmation": "Does not ask again or re-state the plan",
+        "understands_fold_into": "Understands 'fold into' means merge/join, not a separate column"
+      },
+      "must_have": [],
+      "must_not_have": ["To confirm", "Just to clarify", "Are you sure"]
+    }
+
+  ]
+}

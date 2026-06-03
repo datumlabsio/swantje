@@ -1,0 +1,427 @@
+{
+  "name": "westwise_extended",
+  "description": "Westwise ClickHouse analytics layer \u2014 16 tables, voice/marketing/billing/sales + source",
+  "built_at": "2026-06-02T15:36:37.293384+00:00",
+  "schema_tables": [
+    "int_sales__deals_legacy_cleansed",
+    "int_sales__deals_information_legacy_cleansed",
+    "int_sales__agent_performance",
+    "int_sales__affiliate_performance",
+    "int_platform_billing",
+    "int_sales__cpl",
+    "int_marketing__cpc_lhp",
+    "int_sales__common_drops",
+    "int_voice_calls__agent_daily_report",
+    "int_voice_calls__deals_calls_transcripts",
+    "int_voice_calls__ringing_legacy_cleansed",
+    "int_marketing__campaign_top_funnel",
+    "int_sales__drop_reasons_percentage",
+    "stg_callrails__calls",
+    "stg_google_ads__campaigns"
+  ],
+  "context_turn": {
+    "role": "assistant",
+    "content": "Config loaded from `.swantje/config.json`:\n\n```json\n{\n  \"connectors\": {\n    \"clickhouse\": {\n      \"enabled\": true,\n      \"host\": \"wh43usg2hz.us-central1.gcp.clickhouse.cloud\",\n      \"database\": \"analytics_prod\"\n    }\n  }\n}\n```\n\nConnected to ClickHouse (Westwise). Analytics layer: `analytics_prod`.\n\nKey tables (16 tables across sales, voice, marketing, billing, and source layers):\n\n**int_sales__deals_legacy_cleansed** [sales] (19,030 rows)\n  \u2022 id (Nullable(String)) \u2014 Primary record identifier\n  \u2022 created_time (DateTime('America/Los_Angeles')) \u2014 Deal creation timestamp\n  \u2022 cost_per_click (Nullable(Int64)) \u2014 Cost per click value\n  \u2022 amount (Nullable(Int64)) \u2014 Deal amount\n  \u2022 closing_date (Nullable(Date)) \u2014 Deal closing date\n  \u2022 state (Nullable(String)) \u2014 State of the deal\n  \u2022 stage (Nullable(String)) \u2014 Current stage of the deal\n  \u2022 deal_name (Nullable(String)) \u2014 Name of the deal\n  \u2022 reason_for_loss__s (Nullable(String)) \u2014 Reason for loss if applicable\n  \u2022 expected_revenue (Nullable(Int64)) \u2014 Expected revenue from the deal\n  \u2022 +33 more cols\n\n**int_sales__deals_information_legacy_cleansed** [sales] (18,598 rows)\n  \u2022 id (String) \u2014 Primary record identifier\n  \u2022 created_time (DateTime('America/Los_Angeles')) \u2014 Deal creation time in America/Los_Angeles timezone\n  \u2022 cost_per_click (Nullable(Int64)) \u2014 Cost per click value\n  \u2022 amount (Nullable(Int64)) \u2014 Deal amount\n  \u2022 closing_date (Nullable(Date)) \u2014 Deal closing date\n  \u2022 state (Nullable(String)) \u2014 State of the deal\n  \u2022 stage (Nullable(String)) \u2014 Current stage of the deal\n  \u2022 deal_name (Nullable(String)) \u2014 Name of the deal\n  \u2022 reason_for_loss__s (Nullable(String)) \u2014 Reason for loss if applicable\n  \u2022 expected_revenue (Nullable(Int64)) \u2014 Expected revenue from the deal\n  \u2022 +30 more cols\n\n**int_sales__agent_performance** [sales] (5,657 rows)\n  \u2022 created_date (Date) \u2014 Date of activity\n  \u2022 agent_email (String) \u2014 Agent's email address\n  \u2022 ran_agent_id (String) \u2014 Randomized agent identifier from seed table\n  \u2022 total_forms (UInt64) \u2014 Count of form submissions with tracking key\n  \u2022 total_signed_deals (UInt64) \u2014 Count of signed deals across all qualifying stages\n  \u2022 total_call_deals (UInt64) \u2014 Count of signed deals from call sources\n  \u2022 total_form_deals (UInt64) \u2014 Count of signed deals from form sources\n  \u2022 one_time_call (UInt64) \u2014 Count of deals signed after only one call\n  \u2022 total_referrals (UInt64) \u2014 Count of warm transfer deals (all statuses)\n  \u2022 total_cx_referrals (UInt64) \u2014 Count of Warm Transfer Signed deals\n  \u2022 +8 more cols\n\n**int_sales__affiliate_performance** [sales] (5,947 rows)\n  \u2022 created_date (Nullable(Date))\n  \u2022 vendor (Nullable(String))\n  \u2022 matter_type (Nullable(String))\n  \u2022 formatted_call_type (Nullable(String))\n  \u2022 source_name (Nullable(String))\n  \u2022 total_affiliate_forms (UInt64)\n  \u2022 total_affiliate_distributed_leads (UInt64)\n  \u2022 total_affiliate_drop_leads (UInt64)\n  \u2022 total_affiliate_calls (UInt64)\n  \u2022 total_duration (Float64)\n  \u2022 +4 more cols\n\n**int_platform_billing** [billing] (2,899 rows)\n  \u2022 usage_date (Nullable(Date))\n  \u2022 platform (String)\n  \u2022 total_cost (Float64)\n\n**int_sales__cpl** [sales] (100 rows)\n  \u2022 date (Date) \u2014 Reporting date\n  \u2022 total_cost (Float64) \u2014 Total Google Ads spend for the day\n  \u2022 calls (UInt64) \u2014 Count of unique inbound call phone numbers\n  \u2022 forms (UInt64) \u2014 Count of form submissions without a vendor\n  \u2022 total_leads (UInt64) \u2014 Sum of calls and forms\n  \u2022 cost_per_lead (Nullable(Float64)) \u2014 Total cost divided by total leads\n\n**int_marketing__cpc_lhp** [marketing] (100 rows)\n  \u2022 segments_date (Date) \u2014 The date of the marketing segment.\n  \u2022 campaignename (String) \u2014 The name of the marketing campaign.\n  \u2022 campaign_type (String) \u2014 The classification of the campaign as 'LHP' or 'Non-LHP' based on the campaign name.\n  \u2022 CPC (Nullable(Float64))\n\n**int_sales__common_drops** [sales] (? rows)\n  \u2022 assigned_firm_name (Nullable(String)) \u2014 Name of the assigned law firm\n  \u2022 top_drop_reason (Nullable(String)) \u2014 Most common drop reason for the firm\n  \u2022 top_reason_count (UInt64) \u2014 Count of the top drop reason\n  \u2022 total_drops (UInt64) \u2014 Total number of drops for the firm\n  \u2022 pct_of_firm_drops (Nullable(Float64)) \u2014 Percentage of total drops attributed to the top reason\n\n**int_voice_calls__agent_daily_report** [voice] (861 rows)\n  \u2022 start_time (Date) \u2014 The date when the call activity was recorded.\n  \u2022 agent_name (String) \u2014 The name of the agent handling the calls.\n  \u2022 total_calls (UInt64) \u2014 The total number of calls handled by the agent on the given day.\n  \u2022 total_missed_calls (UInt64) \u2014 The number of calls that were not answered by the agent.\n  \u2022 answered_calls (UInt64) \u2014 The number of calls that were successfully answered by the agent.\n  \u2022 missed_calls_percentage (Float64) \u2014 The percentage of calls that were missed by the agent.\n  \u2022 missed_more_than_20_sec (UInt64) \u2014 The number of missed calls where the ringing time exceeded 20 seconds.\n  \u2022 missed_more_than_20_sec_percentage (Nullable(Float64)) \u2014 The percentage of missed calls with ringing time over 20 seconds.\n  \u2022 total_ringing_time (Float64)\n\n**int_voice_calls__deals_calls_transcripts** [voice] (209,094 rows)\n  \u2022 transcript_logid (String)\n  \u2022 call_logid (String)\n  \u2022 start_time (Nullable(DateTime64(3, 'America/Los_Angeles')))\n  \u2022 user_number (Nullable(String))\n  \u2022 agent_number (Nullable(String))\n  \u2022 formatted_customer_phone_number (Nullable(String))\n  \u2022 first_touch_keywords (Nullable(String))\n  \u2022 call_type (Nullable(String))\n  \u2022 intent (String)\n  \u2022 summary (String)\n  \u2022 +7 more cols\n\n**int_voice_calls__ringing_legacy_cleansed** [voice] (108,657 rows)\n  \u2022 _queue_id (Nullable(Int64)) \u2014 Unique identifier for the call queue.\n  \u2022 queue_name (Nullable(String)) \u2014 Name of the call queue.\n  \u2022 call_start_time (DateTime('America/Los_Angeles')) \u2014 Timestamp indicating when the call started.\n  \u2022 call_end_time (DateTime('America/Los_Angeles')) \u2014 Timestamp indicating when the call ended.\n  \u2022 talk_time (Nullable(Int64)) \u2014 Duration of the call in seconds.\n  \u2022 error_code (Nullable(Int64)) \u2014 Code representing any error that occurred during the call.\n  \u2022 message (Nullable(String)) \u2014 Message associated with the call event.\n  \u2022 logid (String) \u2014 Unique identifier for the call log.\n  \u2022 agent_name (String) \u2014 Name of the agent handling the call.\n  \u2022 agent_number (String) \u2014 Phone number of the agent handling the call.\n  \u2022 +8 more cols\n\n**int_marketing__campaign_top_funnel** [marketing] (? rows)\n  \u2022 day_date (DateTime) \u2014 The specific day for which the data is aggregated.\n  \u2022 week_date (Date) \u2014 The week starting date for which the data is aggregated.\n  \u2022 month_date (Date) \u2014 The month starting date for which the data is aggregated.\n  \u2022 quarter_date (Date) \u2014 The quarter starting date for which the data is aggregated.\n  \u2022 year_date (Date) \u2014 The year starting date for which the data is aggregated.\n  \u2022 b.segments_date (Date)\n  \u2022 c.campaign_date (String)\n  \u2022 c.campaign_type (String)\n  \u2022 cost (Float64) \u2014 The total cost associated with the campaign type and date, defaulting to 0 if no cost is recorded.\n\n**stg_callrails__calls** [source] (52,690 rows)\n  \u2022 start_time (Nullable(DateTime('America/Los_Angeles')))\n  \u2022 answered (Nullable(Bool))\n  \u2022 business_phone_number (Nullable(String))\n  \u2022 customer_city (Nullable(String))\n  \u2022 customer_country (Nullable(String))\n  \u2022 customer_name (Nullable(String))\n  \u2022 customer_phone_number (Nullable(String))\n  \u2022 customer_state (Nullable(String))\n  \u2022 direction (Nullable(String))\n  \u2022 duration (Nullable(Int64))\n  \u2022 +85 more cols\n\n**stg_google_ads__campaigns** [source] (53,055 rows)\n  \u2022 segments_date (Date) \u2014 The date segment for the campaign data.\n  \u2022 segments_hour (Int64) \u2014 The hour segment for the campaign data.\n  \u2022 campaign_resource_name (String) \u2014 The unique resource name of the campaign in Google Ads.\n  \u2022 campaign_status (String) \u2014 The current status of the campaign, indicating whether it is active, paused, or removed.\n  \u2022 campaign_ad_serving_optimization_status (String) \u2014 The optimization status for ad serving, reflecting how ads are being optimized for delivery.\n  \u2022 campaign_advertising_channel_type (String) \u2014 The type of advertising channel used for the campaign, such as search, display, or video.\n  \u2022 campaign_experiment_type (String) \u2014 The type of experiment associated with the campaign, if any.\n  \u2022 campaign_serving_status (String) \u2014 The serving status of the campaign, indicating if ads are being served.\n  \u2022 campaign_bidding_strategy_type (String) \u2014 The type of bidding strategy employed by the campaign.\n  \u2022 campaign_payment_mode (String) \u2014 The payment mode for the campaign, such as clicks or impressions.\n  \u2022 +16 more cols\n\n\nVerified ground-truth metrics:\n  \u2022 Total deals in int_sales__deals_legacy_cleansed: **39577**\n  \u2022 Contract Signed deals: **322**\n  \u2022 Distinct active agents: **23**\n  \u2022 Distinct states in deals: **97**\n  \u2022 Total affiliate distributed leads: **5520**\n  \u2022 Most recent deal creation date: **2026-06-02**\n  \u2022 All distinct deal stages: **['Contract Sent', 'Contract Signed', 'Courier Request', 'Distributed', 'Dropped', 'Make Contact', 'New', 'Not Signed', 'Paid in full', 'Qualifying', 'Ready for distribution', 'Reengage', 'Referred', 'Rescore', 'Spam', 'Warm Transfer', 'Warm Transfer Drop', 'Warm Transfer Not Signed', 'Warm Transfer Signed']**\n  \u2022 Total rows in int_voice_calls__agent_daily_report: **8420**\n  \u2022 Total call-deal transcript rows: **129755**\n  \u2022 Sum of missed calls across all agents: **3795**\n  \u2022 Total CallRail call records: **73731**\n  \u2022 Total warm transfer signed deals: **1215**\n  \u2022 Total Google Ads campaign rows: **462579**\n  \u2022 Total platform billing cost (all time): **38915.04**\n  \u2022 Most common drop reason: **Other**\n  \u2022 Distinct affiliate vendors: **8**\n  \u2022 Average deal amount (non-null): **2056.0**\n\nReady."
+  },
+  "ground_truth": [
+    {
+      "id": "total_deals",
+      "label": "Total deals in int_sales__deals_legacy_cleansed",
+      "sql": "SELECT count() FROM analytics_prod.int_sales__deals_legacy_cleansed",
+      "value": 39577
+    },
+    {
+      "id": "signed_deals",
+      "label": "Contract Signed deals",
+      "sql": "SELECT count() FROM analytics_prod.int_sales__deals_legacy_cleansed WHERE stage = 'Contract Signed'",
+      "value": 322
+    },
+    {
+      "id": "distinct_agents",
+      "label": "Distinct active agents",
+      "sql": "SELECT count(DISTINCT agent_email) FROM analytics_prod.int_sales__agent_performance",
+      "value": 23
+    },
+    {
+      "id": "distinct_states",
+      "label": "Distinct states in deals",
+      "sql": "SELECT count(DISTINCT state) FROM analytics_prod.int_sales__deals_legacy_cleansed WHERE state IS NOT NULL",
+      "value": 97
+    },
+    {
+      "id": "total_affiliate_leads",
+      "label": "Total affiliate distributed leads",
+      "sql": "SELECT sum(total_affiliate_distributed_leads) FROM analytics_prod.int_sales__affiliate_performance",
+      "value": 5520
+    },
+    {
+      "id": "latest_deal_date",
+      "label": "Most recent deal creation date",
+      "sql": "SELECT max(toDate(created_time)) FROM analytics_prod.int_sales__deals_legacy_cleansed",
+      "value": "2026-06-02"
+    },
+    {
+      "id": "deal_stages",
+      "label": "All distinct deal stages",
+      "sql": "SELECT groupArray(DISTINCT stage) FROM analytics_prod.int_sales__deals_legacy_cleansed WHERE stage IS NOT NULL",
+      "value": [
+        "Contract Sent",
+        "Contract Signed",
+        "Courier Request",
+        "Distributed",
+        "Dropped",
+        "Make Contact",
+        "New",
+        "Not Signed",
+        "Paid in full",
+        "Qualifying",
+        "Ready for distribution",
+        "Reengage",
+        "Referred",
+        "Rescore",
+        "Spam",
+        "Warm Transfer",
+        "Warm Transfer Drop",
+        "Warm Transfer Not Signed",
+        "Warm Transfer Signed"
+      ]
+    },
+    {
+      "id": "voice_agent_events",
+      "label": "Total rows in int_voice_calls__agent_daily_report",
+      "sql": "SELECT count() FROM analytics_prod.int_voice_calls__agent_daily_report",
+      "value": 8420
+    },
+    {
+      "id": "total_transcripts",
+      "label": "Total call-deal transcript rows",
+      "sql": "SELECT count() FROM analytics_prod.int_voice_calls__deals_calls_transcripts",
+      "value": 129755
+    },
+    {
+      "id": "missed_calls_total",
+      "label": "Sum of missed calls across all agents",
+      "sql": "SELECT sum(total_missed_calls) FROM analytics_prod.int_sales__agent_performance",
+      "value": 3795
+    },
+    {
+      "id": "callrail_calls_total",
+      "label": "Total CallRail call records",
+      "sql": "SELECT count() FROM analytics_prod.stg_callrails__calls",
+      "value": 73731
+    },
+    {
+      "id": "warm_transfer_signed",
+      "label": "Total warm transfer signed deals",
+      "sql": "SELECT sum(warm_transfer_signed) FROM analytics_prod.int_sales__affiliate_performance",
+      "value": 1215
+    },
+    {
+      "id": "google_campaigns_total",
+      "label": "Total Google Ads campaign rows",
+      "sql": "SELECT count() FROM analytics_prod.stg_google_ads__campaigns",
+      "value": 462579
+    },
+    {
+      "id": "total_platform_cost",
+      "label": "Total platform billing cost (all time)",
+      "sql": "SELECT round(sum(total_cost), 2) FROM analytics_prod.int_platform_billing",
+      "value": 38915.04
+    },
+    {
+      "id": "top_drop_reason",
+      "label": "Most common drop reason",
+      "sql": "SELECT drop_reason1 FROM analytics_prod.int_sales__deals_legacy_cleansed WHERE drop_reason1 IS NOT NULL GROUP BY drop_reason1 ORDER BY count() DESC LIMIT 1",
+      "value": "Other"
+    },
+    {
+      "id": "distinct_vendors",
+      "label": "Distinct affiliate vendors",
+      "sql": "SELECT count(DISTINCT vendor) FROM analytics_prod.int_sales__affiliate_performance WHERE vendor IS NOT NULL",
+      "value": 8
+    },
+    {
+      "id": "avg_deal_amount",
+      "label": "Average deal amount (non-null)",
+      "sql": "SELECT round(avg(amount), 0) FROM analytics_prod.int_sales__deals_legacy_cleansed WHERE amount IS NOT NULL",
+      "value": 2056.0
+    }
+  ],
+  "grounded_cases": [
+    {
+      "id": "ww-metric-001",
+      "customer": "westwise",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "How many total deals do we have?",
+      "ground_truth_id": "total_deals",
+      "rubric": {
+        "number_first": "Response leads with a number",
+        "correct_value": "Number matches ground-truth total_deals (39577)"
+      },
+      "must_have": [],
+      "must_not_have": [
+        "Here is",
+        "Let me"
+      ]
+    },
+    {
+      "id": "ww-metric-002",
+      "customer": "westwise",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "How many Contract Signed deals are there?",
+      "ground_truth_id": "signed_deals",
+      "rubric": {
+        "number_first": "Response leads with a number",
+        "correct_value": "Number matches ground-truth signed_deals (322)",
+        "correct_filter": "Filters on stage = 'Contract Signed'"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+    {
+      "id": "ww-metric-003",
+      "customer": "westwise",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "How many distinct agents are in the performance table?",
+      "ground_truth_id": "distinct_agents",
+      "rubric": {
+        "number_first": "Response leads with a number",
+        "correct_value": "Number matches ground-truth distinct_agents (23)"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+    {
+      "id": "ww-lookup-001",
+      "customer": "westwise",
+      "category": "data_lookup",
+      "language": "en",
+      "prompt": "What are all the distinct deal stages?",
+      "ground_truth_id": "deal_stages",
+      "rubric": {
+        "lists_stages": "Lists the actual stage values",
+        "structured": "Output is a list or table, not prose"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+    {
+      "id": "ww-diagnostic-001",
+      "customer": "westwise",
+      "category": "diagnostic",
+      "language": "en",
+      "prompt": "Why would the first row in int_sales__deals_legacy_cleansed have a NULL state?",
+      "ground_truth_id": null,
+      "rubric": {
+        "hypothesis_first": "States most likely root cause",
+        "references_correct_table": "References int_sales__deals_legacy_cleansed and the state column",
+        "check_query_provided": "Provides a ClickHouse query to investigate"
+      },
+      "must_have": [
+        "NULL",
+        "state"
+      ],
+      "must_not_have": []
+    },
+    {
+      "id": "ww-sql-001",
+      "customer": "westwise",
+      "category": "sql_technical",
+      "language": "en",
+      "prompt": "Give me the SQL for total signed deals grouped by state, last 90 days",
+      "ground_truth_id": null,
+      "rubric": {
+        "raw_sql_only": "Returns a SQL block with comment header, no prose",
+        "correct_table": "Queries analytics_prod.int_sales__deals_legacy_cleansed",
+        "correct_filter": "Filters on stage = 'Contract Signed' and created_time within 90 days",
+        "groups_by_state": "Groups by state column",
+        "clickhouse_dialect": "Uses ClickHouse syntax (toDate, now(), INTERVAL)"
+      },
+      "must_have": [
+        "```sql",
+        "Contract Signed",
+        "state"
+      ],
+      "must_not_have": [
+        "Here is the",
+        "This query"
+      ]
+    },
+    {
+      "id": "ww-voice-001",
+      "customer": "westwise",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "How many total agent call events are recorded?",
+      "ground_truth_id": "voice_agent_events",
+      "rubric": {
+        "number_first": "Response leads with a number",
+        "correct_value": "Number matches ground-truth voice_agent_events (8420)",
+        "correct_table": "References int_voice_calls__agent_daily_report"
+      },
+      "must_have": [],
+      "must_not_have": [
+        "Here is",
+        "Let me"
+      ]
+    },
+    {
+      "id": "ww-voice-002",
+      "customer": "westwise",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "What is the total number of missed calls across all agents?",
+      "ground_truth_id": "missed_calls_total",
+      "rubric": {
+        "number_first": "Response leads with a number",
+        "correct_value": "Number matches ground-truth missed_calls_total (3795)",
+        "uses_agent_perf": "Queries int_sales__agent_performance using total_missed_calls column"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+    {
+      "id": "ww-voice-003",
+      "customer": "westwise",
+      "category": "data_lookup",
+      "language": "en",
+      "prompt": "Show me the top 5 agents by missed calls",
+      "ground_truth_id": null,
+      "rubric": {
+        "table_format": "Returns a table (not prose)",
+        "correct_columns": "Table includes agent identifier and missed call count",
+        "ordered_desc": "Results are ordered by missed calls descending",
+        "limit_5": "Returns exactly 5 rows"
+      },
+      "must_have": [
+        "|"
+      ],
+      "must_not_have": []
+    },
+    {
+      "id": "ww-diagnostic-002",
+      "customer": "westwise",
+      "category": "diagnostic",
+      "language": "en",
+      "prompt": "Why would int_voice_calls__deals_calls_transcripts have more rows than stg_callrails__calls?",
+      "ground_truth_id": null,
+      "note": "deals_calls_transcripts has 129755 rows, stg_callrails__calls has 73731 rows",
+      "rubric": {
+        "hypothesis_first": "States most likely cause (fan-out from JOIN, multiple transcripts per call, different grain)",
+        "evidence_section": "Has Evidence section",
+        "fix_section": "Has Fix/next-step section",
+        "mentions_join_fanout": "Mentions JOIN fan-out or different granularity as the root cause"
+      },
+      "must_have": [
+        "Hypothesis"
+      ],
+      "must_not_have": []
+    },
+    {
+      "id": "ww-marketing-001",
+      "customer": "westwise",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "How many total Google Ads campaign rows are in the staging table?",
+      "ground_truth_id": "google_campaigns_total",
+      "rubric": {
+        "number_first": "Response leads with a number",
+        "correct_value": "Number matches ground-truth google_campaigns_total (462579)",
+        "correct_table": "References stg_google_ads__campaigns"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+    {
+      "id": "ww-marketing-002",
+      "customer": "westwise",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "What is the total platform cost across all time in the billing table?",
+      "ground_truth_id": "total_platform_cost",
+      "rubric": {
+        "number_first": "Response leads with a number or currency value",
+        "correct_value": "Number matches ground-truth total_platform_cost (38915.04)",
+        "correct_table": "References int_platform_billing"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+    {
+      "id": "ww-sales-002",
+      "customer": "westwise",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "What is the most common drop reason?",
+      "ground_truth_id": "top_drop_reason",
+      "rubric": {
+        "names_reason": "Names the actual top drop reason string",
+        "correct_value": "Drop reason matches ground-truth (Other)",
+        "no_table": "Returns a single value, not a full table of all reasons"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+    {
+      "id": "ww-sales-003",
+      "customer": "westwise",
+      "category": "metric_exact_number",
+      "language": "en",
+      "prompt": "How many distinct affiliate vendors are in the performance table?",
+      "ground_truth_id": "distinct_vendors",
+      "rubric": {
+        "number_first": "Response leads with a number",
+        "correct_value": "Number matches ground-truth distinct_vendors (8)"
+      },
+      "must_have": [],
+      "must_not_have": []
+    },
+    {
+      "id": "ww-sql-002",
+      "customer": "westwise",
+      "category": "sql_technical",
+      "language": "en",
+      "prompt": "Give me the SQL for warm transfer signed deals grouped by vendor for the last 30 days",
+      "ground_truth_id": null,
+      "rubric": {
+        "raw_sql_only": "Returns raw SQL block with comment header, no prose",
+        "correct_table": "Queries int_sales__affiliate_performance",
+        "uses_warm_transfer_signed": "References warm_transfer_signed column",
+        "groups_by_vendor": "Groups by vendor column",
+        "date_filter": "Filters on last 30 days using ClickHouse date functions",
+        "clickhouse_dialect": "Uses ClickHouse syntax"
+      },
+      "must_have": [
+        "```sql",
+        "vendor",
+        "warm_transfer_signed"
+      ],
+      "must_not_have": [
+        "Here is",
+        "This query returns"
+      ]
+    },
+    {
+      "id": "ww-diagnostic-003",
+      "customer": "westwise",
+      "category": "diagnostic",
+      "language": "en",
+      "prompt": "Why might the average deal amount from the database differ from what finance reports?",
+      "ground_truth_id": "avg_deal_amount",
+      "note": "Database avg_deal_amount = 2056.0",
+      "rubric": {
+        "hypothesis_first": "States most likely causes (NULL exclusion, different stage filters, currency/adjustment fields)",
+        "evidence_section": "Has Evidence section mentioning specific fields (amount vs adjusted_amount, stage filters)",
+        "fix_section": "Has Fix section proposing how to reconcile",
+        "mentions_filters": "Mentions that stage filters or NULL handling affect the average"
+      },
+      "must_have": [
+        "Hypothesis"
+      ],
+      "must_not_have": []
+    }
+  ]
+}

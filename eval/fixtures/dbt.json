@@ -1,0 +1,143 @@
+{
+  "name": "dbt",
+  "description": "Westwise dbt project \u2014 102 models, 13 sources, ClickHouse target",
+  "built_at": "2026-06-02T16:43:45.182186+00:00",
+  "dbt_project_path": "/Users/zain/dev/westwise-dbt/westwise_analytics",
+  "model_count": 102,
+  "source_count": 13,
+  "context_turn": {
+    "role": "assistant",
+    "content": "Config loaded from `.swantje/config.json`:\n\n```json\n{\n  \"connectors\": {\n    \"clickhouse\": {\n      \"enabled\": true,\n      \"host\": \"wh43usg2hz.us-central1.gcp.clickhouse.cloud\",\n      \"database\": \"analytics_prod\"\n    },\n    \"dbt\": {\n      \"enabled\": true,\n      \"project_dir\": \"~/dev/westwise-dbt/westwise_analytics\",\n      \"profiles_dir\": \"~/.dbt\",\n      \"target\": \"prod\"\n    }\n  }\n}\n```\n\ndbt project: westwise  |  profile: westwise \u2192 ClickHouse analytics_prod\nTotal models: 102  |  Sources: 13 YAML files\n\n## Model inventory by domain\n\n### intermediate/\n  billing:\n    \u2022 int_platform_billing (2,899 rows)\n  call_transcript_llm:\n    \u2022 int_call_transcript_llm__daily_classification_stats\n  core_metrics:\n    \u2022 int_affiliate_daily\n    \u2022 int_daily_transposed_cumulative\n    \u2022 int_month_to_date\n    \u2022 int_total_daily\n    \u2022 int_ww_daily\n  google_chat:\n    \u2022 daily_metrix\n    \u2022 hourly_ticker\n    \u2022 int_affiliate_monthly\n    \u2022 int_ww_monthly\n    \u2022 month_to_date\n  marketing:\n    \u2022 int_marketing__campaign_top_funnel\n    \u2022 int_marketing__ga4_page_detail\n    \u2022 int_marketing__ga4_page_tracking\n    \u2022 int_marketing__mid_funnel\n    \u2022 int_marketing__serp_enrichment\n    \u2022 int_marketing__web_flow\n  sales:\n    \u2022 int_sales__affiliate_performance (5,947 rows)\n    \u2022 int_sales__affiliate_performance_transpose (597 rows)\n    \u2022 int_sales__agent_performance (5,657 rows)\n    \u2022 int_sales__billing_invoices\n    \u2022 int_sales__common_drops\n    \u2022 int_sales__deals_information_legacy_cleansed (18,598 rows)\n    \u2022 int_sales__deals_legacy_cleansed (19,030 rows)\n    \u2022 int_sales__drop_reasons_percentage\n    \u2022 int_sales__firms_performance\n    \u2022 int_sales__state_performance\n    \u2022 int_sales__total_drops_percentage\n  voice_calls:\n    \u2022 int_voice_calls__agent_daily_report (861 rows)\n    \u2022 int_voice_calls__agent_hourly_report (861 rows)\n    \u2022 int_voice_calls__call_opportunities_returned (18,782 rows)\n    \u2022 int_voice_calls__deals_calls_transcripts (209,094 rows)\n    \u2022 int_voice_calls__missed_calls_logs (3,899 rows)\n    \u2022 int_voice_calls__staffing (21 rows)\n\n### staging/\n  billing:\n    \u2022 stg_clickhouse__usage_cost (72 rows)\n    \u2022 stg_decodo__cost (49 rows)\n    \u2022 stg_gcp__billing (2,450 rows)\n    \u2022 stg_langfuse__cost (150 rows)\n  call_rails:\n    \u2022 stg_callrails__calls (52,690 rows)\n  call_transcript_llm:\n    \u2022 stg_call_transcript_llm__classification_results_logs\n    \u2022 stg_call_transcript_llm__stats\n    \u2022 stg_call_transcript_llm__transcripts_classification_results\n  facebook_ads:\n    \u2022 stg_facebook_ads__ad_sets\n    \u2022 stg_facebook_ads__ads\n    \u2022 stg_facebook_ads__ads_creatives\n    \u2022 stg_facebook_ads__campaigns\n    \u2022 stg_facebook_ads__facebook_insights\n    \u2022 stg_facebook_ads__facebook_insights_breakdown\n  ga4:\n    \u2022 stg_ga4_ag__events\n    \u2022 stg_ga4_ag__sessions\n    \u2022 stg_ga4_ww__events\n    \u2022 stg_ga4_ww__sessions\n  google_ads:\n    \u2022 stg_google_ads__ad_group_report (664,381 rows)\n    \u2022 stg_google_ads__campaigns (53,055 rows)\n    \u2022 stg_google_ads__geo_targets\n    \u2022 stg_google_ads__geographic_view\n  google_spreadsheets:\n    \u2022 stg_google_spreadsheets__intake_schedule\n  legacy_zoho_sales:\n    \u2022 stg_zoho_sales__chats_legacy (739 rows)\n  legacy_zoho_voice:\n    \u2022 stg_zoho_voice__agent_status_audit\n    \u2022 stg_zoho_voice__agent_status_metrics (52,690 rows)\n    \u2022 stg_zoho_voice__call_logs_details_legacy (205,616 rows)\n    \u2022 stg_zoho_voice__call_logs_legacy (205,616 rows)\n    \u2022 stg_zoho_voice__call_transcript (205,616 rows)\n    \u2022 stg_zoho_voice__queues (6 rows)\n    \u2022 stg_zoho_voice__ringing_legacy (111,452 rows)\n    \u2022 stg_zoho_voice__sms_logs_legacy (83 rows)\n    \u2022 stg_zoho_voice__users_information (40 rows)\n  zoho_books_latest:\n    \u2022 stg_zoho_books__invoices_latest (374 rows)\n  zoho_crm_latest:\n    \u2022 stg_zoho_crm__deals_latest (11 rows)\n    \u2022 stg_zoho_crm__lead_invoices_latest (1 rows)\n    \u2022 stg_zoho_crm__leads_latest (52,061 rows)\n  zoho_crm_legacy:\n    \u2022 stg_zoho_crm__deals_information_legacy (35,127 rows)\n    \u2022 stg_zoho_crm__deals_legacy (35,557 rows)\n    \u2022 stg_zoho_crm__firms_legacy (31 rows)\n    \u2022 stg_zoho_crm__lead_invoices_legacy (1,048 rows)\n    \u2022 stg_zoho_crm__lead_sources (138 rows)\n    \u2022 stg_zoho_crm__leads_legacy (843 rows)\n    \u2022 stg_zoho_crm__signed_documents_legacy (6,991 rows)\n    \u2022 stg_zoho_crm__state_information_legacy\n\n### semantic/\n  (root):\n    \u2022 metricflow_time_spine\n\n## Source systems (13 YAML definitions)\n  Zoho CRM (legacy + latest), Zoho Voice (legacy), GA4 (westwise + accident-group),\n  Google Ads, Facebook Ads, CallRail, Zoho Books, Google Sheets,\n  billing (GCP, ClickHouse, Langfuse, Decodo)\n\n## Key lineage paths\n  stg_zoho_crm__deals_legacy\n    \u2192 int_sales__deals_legacy_cleansed\n      \u2192 int_sales__deals_legacy_cleansed_stream_v (+ streaming branch)\n        \u2192 int_ww_daily\n  stg_callrails__calls\n    \u2192 int_voice_calls__callrails_streaming_v\n      \u2192 int_sales__affiliate_performance\n  stg_google_ads__campaigns\n    \u2192 int_google_ads__campaigns_v\n      \u2192 int_marketing__cpc_lhp \u2192 int_ww_daily\n\n## ClickHouse-specific patterns in use\n  FINAL clause (ReplacingMergeTree dedup)\n  merge() function (wildcard GA4 tables)\n  toTimeZone(toDateTime64(...), 'America/Los_Angeles')\n  JSONExtractString(), JSONExtractArrayRaw(), arrayFirst()\n  ROW_NUMBER() OVER (PARTITION BY id ORDER BY modified_time DESC)\n  toDate(), toDateTime64(), assumeNotNull(), nullIf()\n\nReady."
+  },
+  "ground_truth": [],
+  "grounded_cases": [
+    {
+      "id": "dbt-refactor-001",
+      "customer": "dbt",
+      "category": "config_change",
+      "language": "en",
+      "prompt": "Refactor int_sales__deals_legacy_cleansed to use incremental materialization",
+      "ground_truth_id": null,
+      "rubric": {
+        "shows_config_block": "Shows the dbt config block change (materialized='incremental')",
+        "adds_where_clause": "Adds an incremental WHERE clause filtering on modified_time or created_time",
+        "no_full_rewrite": "Does not rewrite the entire model SQL \u2014 surgical change only",
+        "immediate": "Executes immediately, no confirmation ask"
+      },
+      "must_have": [
+        "incremental",
+        "modified_time"
+      ],
+      "must_not_have": [
+        "Should I",
+        "Are you sure",
+        "Do you want"
+      ]
+    },
+    {
+      "id": "dbt-test-001",
+      "customer": "dbt",
+      "category": "config_change",
+      "language": "en",
+      "prompt": "Add a not_null and accepted_values test for the stage column in int_sales__deals_legacy_cleansed",
+      "ground_truth_id": "deal_stages",
+      "note": "accepted_values list should include the real stage values from ground truth",
+      "rubric": {
+        "generates_yaml": "Generates a dbt schema YAML test block, not Python or SQL",
+        "not_null_test": "Includes a not_null test for the stage column",
+        "accepted_values_test": "Includes an accepted_values test with real stage names",
+        "correct_model_name": "References int_sales__deals_legacy_cleansed correctly"
+      },
+      "must_have": [
+        "not_null",
+        "accepted_values",
+        "stage"
+      ],
+      "must_not_have": []
+    },
+    {
+      "id": "dbt-diagnostic-001",
+      "customer": "dbt",
+      "category": "diagnostic",
+      "language": "en",
+      "prompt": "My dbt run fails: Database Error in model int_sales__deals_legacy_cleansed \u2014 Table `westwise.stg_zoho_crm__deals_legacy` doesn't exist",
+      "ground_truth_id": null,
+      "rubric": {
+        "hypothesis_first": "States most likely cause first (ref() target not built, wrong schema, spelling)",
+        "evidence_section": "Has an Evidence section citing the error",
+        "conclusion_section": "Has a Conclusion section",
+        "fix_section": "Has a Fix section with concrete steps (dbt run --select stg_zoho_crm__deals_legacy, or check ref() spelling)",
+        "knows_dbt_schema": "Understands dbt writes to the 'westwise' schema in ClickHouse"
+      },
+      "must_have": [
+        "Hypothesis",
+        "Evidence",
+        "Fix"
+      ],
+      "must_not_have": []
+    },
+    {
+      "id": "dbt-logic-001",
+      "customer": "dbt",
+      "category": "logic_explanation",
+      "language": "en",
+      "prompt": "What source tables feed into int_ww_daily?",
+      "ground_truth_id": null,
+      "rubric": {
+        "traces_dag": "Traces the lineage: Google Ads \u2192 int_google_ads__* \u2192 int_ww_daily; Zoho CRM \u2192 int_sales__* \u2192 int_ww_daily",
+        "names_sources": "Names the actual source systems (Google Ads, Zoho CRM)",
+        "plain_language": "Explains in plain language \u2014 no SQL code blocks",
+        "concise": "\u2264150 words"
+      },
+      "must_have": [],
+      "must_not_have": [
+        "```sql",
+        "```python"
+      ]
+    },
+    {
+      "id": "dbt-sql-001",
+      "customer": "dbt",
+      "category": "sql_technical",
+      "language": "en",
+      "prompt": "Give me the raw compiled SQL for int_sales__deals_legacy_cleansed (resolve all refs)",
+      "ground_truth_id": null,
+      "rubric": {
+        "raw_sql_only": "Returns a SQL block, comment header, minimal prose",
+        "resolves_refs": "Replaces {{ ref('...') }} with actual table paths (analytics_prod.stg_zoho_crm__deals_legacy)",
+        "clickhouse_dialect": "Uses ClickHouse functions (toDate, concat, replaceRegexpAll, right)",
+        "comment_header": "SQL block starts with a comment describing the model"
+      },
+      "must_have": [
+        "```sql",
+        "toDate"
+      ],
+      "must_not_have": [
+        "{{ ref(",
+        "Here is the SQL",
+        "This query does",
+        "This query returns"
+      ]
+    },
+    {
+      "id": "dbt-logic-002",
+      "customer": "dbt",
+      "category": "logic_explanation",
+      "language": "en",
+      "prompt": "How does int_sales__deals_legacy_cleansed_stream_v combine batch and streaming data?",
+      "ground_truth_id": null,
+      "rubric": {
+        "explains_hybrid": "Explains the two-branch pattern: batch (stable historical) + streaming (today's updates)",
+        "mentions_final": "Mentions the FINAL clause used for ReplacingMergeTree deduplication",
+        "mentions_dedup": "Explains that the model deduplicates by id keeping latest modified_time",
+        "plain_language": "No SQL code blocks \u2014 plain language explanation",
+        "concise": "\u2264150 words"
+      },
+      "must_have": [],
+      "must_not_have": [
+        "```sql",
+        "```python"
+      ]
+    }
+  ]
+}
